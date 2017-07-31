@@ -3,4 +3,4 @@ app = Flask(__name__)
 
 @app.route("/")
 def main():
-    return jsonify({"msg": "infrabin is running!"})
+    return jsonify({"msg": "infrabin is running"})
