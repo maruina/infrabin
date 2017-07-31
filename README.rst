@@ -1,5 +1,9 @@
-# Infrabin
-[![Build Status](https://travis-ci.org/maruina/infrabin.svg?branch=master)](https://travis-ci.org/maruina/infrabin)
+Infrabin
+===============
+.. image:: https://travis-ci.org/devopshq/youtrack.svg?branch=master
+    :target: https://travis-ci.org/devopshq/youtrack
 
-## Endpoints
-* `/`: return the JSON `{"msg": "infrabin is running"}`
+
+Endpoints
+----------
+* ``/``: return the JSON ``{"msg": "infrabin is running"}``.
