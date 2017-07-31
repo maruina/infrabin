@@ -15,7 +15,7 @@ setup(
     author_email = "matteo.ruina@gmail.com",
     description = ("Like httpbin, but for infrastructure."),
     license = "MIT",
-    keywords = "infrastructure inf bin",
+    keywords = "infrastructure bin",
     packages=['infrabin', 'tests'],
     long_description=read('README.md'),
     classifiers=[
@@ -23,5 +23,6 @@ setup(
         "License :: OSI Approved :: MIT License",
     ],
     setup_requires=['pytest-runner'],
-    tests_require=['pytest']
+    install_requires = ['Flask'],
+    tests_require=['pytest', 'pytest-flask']
 )
