@@ -1,0 +1,13 @@
+- repo: git://github.com/pre-commit/pre-commit-hooks
+  sha: v0.9.1
+  hooks:
+    - id: trailing-whitespace
+    - id: check-json
+    - id: check-yaml
+    - id: detect-aws-credentials
+    - id: detect-private-key
+    - id: end-of-file-fixer
+    - id: flake8
+      args: [--max-line-length=100]
+    - id: pretty-format-json
+      args: [--autofix]
