@@ -9,7 +9,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
-    name = "an_example_pypi_project",
+    name = "infrabin",
     version = "0.0.1",
     author = "Matteo Ruina",
     author_email = "matteo.ruina@gmail.com",
@@ -22,4 +22,6 @@ setup(
         "Topic :: Utilities",
         "License :: OSI Approved :: MIT License",
     ],
+    setup_requires=['pytest-runner'],
+    tests_require=['pytest']
 )
