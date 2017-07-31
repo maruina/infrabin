@@ -1,6 +1,7 @@
 from infrabin import app
 import pytest
 
+
 @pytest.fixture
 def client(request):
     test_client = app.test_client()

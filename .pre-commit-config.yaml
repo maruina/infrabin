@@ -8,6 +8,6 @@
     - id: detect-private-key
     - id: end-of-file-fixer
     - id: flake8
-      args: [--max-line-length=100]
+      args: [--max-line-length=100, infrabin, tests]
     - id: pretty-format-json
       args: [--autofix]
