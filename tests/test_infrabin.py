@@ -5,6 +5,6 @@ import json
 
 def test_main(client):
     response = client.get("/")
-    json_data = json.loads(response.get_data())
+    data = json.loads(response.data.decode('utf-8'))
     assert response.status_code == 200
-    assert json_data == {"msg": "infrabin is running"}
+    assert data == {"msg": "infrabin is running"}
