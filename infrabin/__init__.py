@@ -1,3 +1,4 @@
+import os
 from flask import Flask, jsonify
 from .helpers import status_code
 
@@ -32,3 +33,12 @@ def healthcheck_fail():
     global is_healthy
     is_healthy = False
     return status_code(204)
+
+
+@app.route("/env/<env_var>")
+def env(env_var):
+    value = os.getenv(env_var)
+    if value is None:
+        return status_code(404)
+    else:
+        return jsonify({env_var: value})

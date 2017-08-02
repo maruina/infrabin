@@ -1,6 +1,25 @@
 from __future__ import print_function
 
 import json
+import contextlib
+import os
+
+
+@contextlib.contextmanager
+def _setenv(key, value):
+    """Context manager to set an environment variable temporarily."""
+    old_value = os.environ.get(key, None)
+    if value is None:
+        os.environ.pop(key, None)
+    else:
+        os.environ[key] = value
+
+    yield
+
+    if old_value is None:
+        os.environ.pop(key, None)
+    else:
+        os.environ[key] = value
 
 
 def test_main(client):
@@ -35,3 +54,16 @@ def test_healthcheck_switch(client):
     get_pass_data = json.loads(get_pass.data.decode('utf-8'))
     assert get_pass.status_code == 200
     assert get_pass_data == {"message": "infrabin is healthy"}
+
+
+def test_env_if_present(client):
+    with _setenv('VERSION', "v1"):
+        response = client.get('/env/VERSION')
+        data = json.loads(response.data.decode('utf-8'))
+        assert response.status_code == 200
+        assert data == {"VERSION": "v1"}
+
+
+def test_env_if_missing(client):
+    response = client.get('/env/VERSION')
+    assert response.status_code == 404
