@@ -1,7 +1,23 @@
+sudo: required
+services:
+  - docker
 language: python
 python:
-  - "2.7"
-  - "3.4"
+- '2.7'
+- '3.4'
 install: pip install tox-travis
-script: 
-  - tox
+script:
+- tox
+after_success:
+  - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+  - export TAG=$(if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi)
+  - docker build -f Dockerfile -t $TRAVIS_REPO_SLUG:$COMMIT .
+  - docker tag $TRAVIS_REPO_SLUG:$COMMIT $TRAVIS_REPO_SLUG:$TAG
+  - docker tag $TRAVIS_REPO_SLUG:$COMMIT $TRAVIS_REPO_SLUG:travis-$TRAVIS_BUILD_NUMBER
+  - docker push $TRAVIS_REPO_SLUG
+env:
+  global:
+  - secure: m2McVltDg8cvR/Galx1xGixxu1WqnecyEzom6g5czXRNgYv1BtA6VISI5FUZQBH/k7XWTolbdRzjwkc20hX/GwGfYCVTWff67ZUfm/iKs/kdb7XK62Pq4/LblJhRm8p5JstM+JR/JHa5TEd0ubYMzOA1qx7etm0u0NHBIZi2y3B+1OsO8thhs31apEVfcGS8a3+1W5/iBYONKrfvA6nGli6snzZFprF95R3elnLw0PRFYpP7XL4ygTmGQTGwEqodGCXQm5/gTGw2WjxQ4oyB6gz1aeHUd+7hyFiGQkRY7wwDJmSRH0dSKcW/l7e3Q2520jmcpfHlPmRhhDB+0Ttcq4PfFFIi+I0/4K+Co+BrEFrDejrXqVtITvqWfkd3KvZ7Zc7tFgurNUIF2U44nR7Ti6CNLtKWH47N/25PcuNgwjUE0RiFYPP28b9FKBYw6XUlNBbHlDidXIg38RKBidn6Jr5s+Ek5drXECt5ggrmc667iTKfyabmURQqjGi4Pg7CjV8AyrmYQTe8KKUJkKbSe4KOiVgmsn+nS852qPqr0CDhIOWMUzqQIRI8fZyh7YxHylIrPqe/i/Rx8ev/t1oCLlPpqwR7JAcmjGaDBZZukscV3umyOa+sIQVhfHyWmq5fSh2LfAZApMca8uud1xfAyQdr30XYm5vzWTGGvpAxZfUs=
+  - secure: qVAY6DDme6bRuvt3CXPIZldapaDR2g3zKVJ0z3n11BrWcAMyPDQd5mCULY1Rmai+86kWddp6ZEUaYSy69WVlcY5GPP2+heQJ1pNuHqQsffwH2OMj4WhTJwdCjSk/6xrDK8Ta0o1zAIw49QHEEY00uaR6k2QuPmWHCdGoM7oYLFMu6UGLi3u1JMxDdkUrTg8bT9QAl4MTslErKOlqMVecIV6GIQrd85k3zgXfM1tc1bvjoAtTa/gB5LtD1IwPx7gL9VVe+WE7FvQG+r2EYkkuvclwQ/rjTRzmertR3Rpq3x0OnmKEis2705kSlJ0YVzpUUFRe47Eu2xihMV4IimDvTwEzLpIZxM1pxEZpPtQnUjppwRLYOCayb3AtIuFROvwrcEMhmOIsq69trE7JOdjwsmAm+AHqEi29UvfgvBHrVpT9ZU/ip1EjU3xeYD+9rpeleakIb8F59itSXtog6LDyKMW6MgVPRblkveBcH3s99NDztqlKqn2PzUzQ6CFcJzV8lSkvAaIb43OvgzQWJv3YnpvJBiceJOWEy9EMsTQ8H/G22ldJpKl45SSyNECoBQjE0abXxxKUETebeNljqiJfGGSRWQ2epEUzp0vvPuYE3Z68jJNxwJqgpscVTHGMgc96us1XD0QJQe3V5wXstw9yUGQ/Jo/kGW14HhgqWpKt4tU=
+  - secure: 3PFni2it8+Be8WI2qGGehgxUIel5B7UR+siZBBsMfNr8z1ivCLiMm7dU1ZTmsAghJhPS6t/1VflXX/jfLP58nJII0p1tjOm8sR6ZqPSCkUwFcFDBKrfE3B5qStFH11mC5nYjRTzqr+XjZ3lYIsTWaNIOeVkSvrPjSL8OP6DGICA/52lciWyBpvyBeJFj6V5N9R1Etdio/0WxF9eRAFfnbdHW1o49AcVW+r1VDDoAwvcqLuPJOIjudkSe9b7p0xuTkufWmM3IMOUqVUodb0yCMo2p4OjecnSDKUePRsoh2PDakGRMR9C+jp+4j8j0EhiA2Dfj5DsTmAYBmCRyt42ORrgzsY5R7/JhH7OJT8VNyrdh5aB6X06flmkUj1bwzeKnA45Cp6zTy9FwvYuB2ULOayvJZeV+Lk0Tvj3Wa+hr3AVnJJgV1ZU8z1igwYn64DiIHv+E2NlqR3ctAdXkNCxeGOaQJ1gado8bpE2mFS1O0En9rf7EnzVJkS3qD+ZLVp5cZtDNLVLPJ/qsV5DNFM27njOwNggYziALkgqoIoASsbbW1uSfcrRLNebht7mhyREcej9KKZ+eFLjIPK+9+ghWjhwT4xuQAI9LZgPoToacTCd/9cg4OK9wFEgJ7C164NcY8gkxAY+MzKUW/0kayTuihuNVW20q++3CHiZ+h85ji90=
+  - COMMIT=${TRAVIS_COMMIT::8}
