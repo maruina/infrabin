@@ -1,10 +1,15 @@
 import os
+import requests
 from flask import Flask, jsonify
+from flask.ext.cache import Cache
 from .helpers import status_code
 
 
 app = Flask(__name__)
+cache = Cache(app, config={'CACHE_TYPE': 'simple'})
+
 is_healthy = True
+AWS_METADATA_ENDPOINT = "http://169.254.169.254/latest/meta-data/"
 
 
 @app.route("/")
@@ -42,3 +47,15 @@ def env(env_var):
         return status_code(404)
     else:
         return jsonify({env_var: value})
+
+
+@cache.memoize()
+@app.route("/aws/<metadata_categories>")
+def aws(metadata_categories):
+    try:
+        r = requests.get(AWS_METADATA_ENDPOINT + metadata_categories, timeout=1)
+    except requests.exceptions.ConnectionError:
+        return jsonify({"message": "aws metadata endpoint not available"}), 501
+    if r.status_code == 404:
+        return status_code(404)
+    return jsonify({metadata_categories: r})

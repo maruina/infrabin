@@ -15,3 +15,4 @@ Endpoints
 * ``POST /healthcheck/pass``: return status code ``204`` on success, resetting the ``/healthcheck`` endpoint to be healthy.
 * ``POST /healthcheck/fail``: return status code ``204`` on success, forcing the ``/healthcheck`` endpoint to be unhealthy.
 * ``GET /env/<ENV_VAR>``: returns the value of ``env_var`` or ``404`` if the environment variable doesn't exist.
+* ``GET /aws/<METADATA_ENDPOINT>``: returns the value of the AWS ``metadata_endpoint``, ``501`` if infrabin cannot open the AWS metadata URL, or ``404`` if the metadata endpoint doesn't exist.
