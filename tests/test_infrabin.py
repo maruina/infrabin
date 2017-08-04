@@ -67,3 +67,7 @@ def test_env_if_present(client):
 def test_env_if_missing(client):
     response = client.get('/env/VERSION')
     assert response.status_code == 404
+
+
+def test_headers(client):
+    pass

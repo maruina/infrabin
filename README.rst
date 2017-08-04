@@ -11,6 +11,7 @@ Infrabin can be used to simulate blue/green deployments, to test routing and fai
 Endpoints
 =========
 * ``GET /``: return the JSON ``{"message": "infrabin is running"}``.
+* ``GET /headers``: return a JSON with the request headers, method and origin IP address.
 * ``GET /healthcheck``: return the JSON ``{"message": "infrabin is healthy"}`` if healthy or the status code ``503`` if unhealthy.
 * ``POST /healthcheck/pass``: return status code ``204`` on success, resetting the ``/healthcheck`` endpoint to be healthy.
 * ``POST /healthcheck/fail``: return status code ``204`` on success, forcing the ``/healthcheck`` endpoint to be unhealthy.
