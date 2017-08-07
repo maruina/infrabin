@@ -24,14 +24,14 @@ def _setenv(key, value):
 
 def test_main(client):
     response = client.get("/")
-    data = json.loads(response.data.decode('utf-8'))
+    data = json.loads(response.data.decode("utf-8"))
     assert response.status_code == 200
     assert data == {"message": "infrabin is running"}
 
 
 def test_healthcheck_pass(client):
     response = client.get("/healthcheck")
-    data = json.loads(response.data.decode('utf-8'))
+    data = json.loads(response.data.decode("utf-8"))
     assert response.status_code == 200
     assert data == {"message": "infrabin is healthy"}
 
@@ -51,23 +51,35 @@ def test_healthcheck_switch(client):
     post_pass = client.post("/healthcheck/pass")
     assert post_pass.status_code == 204
     get_pass = client.get("/healthcheck")
-    get_pass_data = json.loads(get_pass.data.decode('utf-8'))
+    get_pass_data = json.loads(get_pass.data.decode("utf-8"))
     assert get_pass.status_code == 200
     assert get_pass_data == {"message": "infrabin is healthy"}
 
 
 def test_env_if_present(client):
-    with _setenv('VERSION', "v1"):
-        response = client.get('/env/VERSION')
-        data = json.loads(response.data.decode('utf-8'))
+    with _setenv("VERSION", "v1"):
+        response = client.get("/env/VERSION")
+        data = json.loads(response.data.decode("utf-8"))
         assert response.status_code == 200
         assert data == {"VERSION": "v1"}
 
 
 def test_env_if_missing(client):
-    response = client.get('/env/VERSION')
+    response = client.get("/env/VERSION")
     assert response.status_code == 404
 
 
-def test_headers(client):
+def test_aws(client):
+    # TODO: find a good way to test this function
     pass
+
+
+def test_headers(client):
+    response = client.get("/headers", headers={"X-Meaning-Of-Life": "42"})
+    data = json.loads(response.data.decode("utf-8"))
+    assert response.status_code == 200
+    assert data["method"] == "GET"
+    assert data["origin"] == "127.0.0.1"
+    assert data["headers"]["X-Meaning-Of-Life"] == "42"
+    assert data["headers"]["User-Agent"] == "werkzeug/0.12.2"
+    assert data["headers"]["Host"] == "localhost"

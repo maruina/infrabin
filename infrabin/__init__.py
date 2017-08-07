@@ -8,7 +8,7 @@ from .helpers import status_code
 
 
 app = Flask(__name__)
-cache = Cache(app, config={'CACHE_TYPE': 'simple'})
+cache = Cache(app, config={"CACHE_TYPE": "simple"})
 
 is_healthy = True
 AWS_METADATA_ENDPOINT = "http://169.254.169.254/latest/meta-data/"
@@ -22,9 +22,9 @@ def main():
 @app.route("/headers")
 def headers():
     request_data = {}
-    request_data['method'] = request.method
-    request_data['headers'] = dict(request.headers)
-    request_data['origin'] = request.remote_addr
+    request_data["method"] = request.method
+    request_data["headers"] = dict(request.headers)
+    request_data["origin"] = request.remote_addr
     return jsonify(request_data)
 
 

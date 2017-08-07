@@ -78,7 +78,5 @@ setup(
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=['Flask', 'requests', 'Flask-Cache'],
     setup_requires=['pytest-runner'],
-    tests_require=['pytest', 'pytest-flask']
-
-
+    tests_requires=['pytest', 'pytest-flask', 'tox']
 )
