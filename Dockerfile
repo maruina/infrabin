@@ -1,17 +1,9 @@
-FROM python:2-alpine
-
-ENV WEB_CONCURRENCY=4
+FROM python:3-alpine
 
 ADD . /infrabin
 
-RUN apk add -U ca-certificates libffi libstdc++ && \
-    apk add --virtual build-deps build-base libffi-dev && \
-    # Pip
-    pip install --no-cache-dir gunicorn /infrabin && \
-    # Cleaning up
-    apk del build-deps && \
-    rm -rf /var/cache/apk/*
+RUN pip install infrabin/
 
 EXPOSE 8080
 
-CMD ["gunicorn", "-b", "0.0.0.0:8080", "infrabin:app"]
+CMD ["infrabin", "serve", "-h", "0.0.0.0", "-p", "8080", "-t", "16"]
