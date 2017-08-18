@@ -5,5 +5,6 @@ ADD . /infrabin
 RUN pip install infrabin/
 
 EXPOSE 8080
+ENV PORT=8080
 
-CMD ["infrabin", "serve", "-h", "0.0.0.0", "-p", "8080", "-t", "16"]
+CMD exec infrabin serve --host=0.0.0.0 --port=$PORT --threads=16
