@@ -1,4 +1,4 @@
-from infrabin import app
+from infrabin.app import app
 import pytest
 
 

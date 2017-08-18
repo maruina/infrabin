@@ -23,7 +23,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.0.1',
+    version='0.0.2',
 
     description='Like httpbin, but for infrastructure',
     long_description=long_description,
@@ -66,17 +66,13 @@ setup(
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
-    packages=find_packages(exclude=['contrib', 'docs', 'tests']),
-
-    # Alternatively, if you want to distribute just a my_module.py, uncomment
-    # this:
-    #   py_modules=["my_module"],
-
-    # List run-time dependencies here.  These will be installed by pip when
-    # your project is installed. For an analysis of "install_requires" vs pip's
-    # requirements files see:
-    # https://packaging.python.org/en/latest/requirements.html
-    install_requires=['Flask', 'requests', 'Flask-Cache'],
+    packages=find_packages("src", exclude=['contrib', 'docs', 'tests']),
+    package_dir={'': 'src'},
+    install_requires=['Flask', 'requests', 'Flask-Cache', 'waitress'],
     setup_requires=['pytest-runner'],
-    tests_requires=['pytest', 'pytest-flask', 'tox']
+    tests_requires=['pytest', 'pytest-flask', 'tox'],
+    entry_points = '''
+         [console_scripts]
+         infrabin=infrabin.scripts.cli:infrabin
+         '''
 )

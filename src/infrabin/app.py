@@ -3,8 +3,8 @@ from __future__ import print_function
 import os
 import requests
 from flask import Flask, jsonify, request
-from flask.ext.cache import Cache
-from .helpers import status_code
+from flask_cache import Cache
+from infrabin.helpers import status_code
 
 
 app = Flask(__name__)
