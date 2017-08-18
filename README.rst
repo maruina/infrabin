@@ -1,5 +1,5 @@
-.. image:: https://travis-ci.org/devopshq/youtrack.svg?branch=master
-    :target: https://travis-ci.org/devopshq/youtrack
+.. image:: https://travis-ci.org/maruina/infrabin.svg?branch=master
+    :target: https://travis-ci.org/maruina/infrabin
 
 Infrabin
 ===============
