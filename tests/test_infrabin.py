@@ -138,3 +138,58 @@ def test_replay(client):
     data = json.loads(response.data.decode("utf-8"))
     assert response.status_code == 200
     assert data["replay"] == "meaning/of/life/42"
+
+
+def test_proxy(client):
+    payload = [
+        {
+            "url": "https://www.google.com"
+        },
+        {
+            "url": "http://httpbin.org/post",
+            "method": "POST",
+            "payload": {
+                "key": "42"
+            }
+        }
+    ]
+    response = client.post("/proxy", data=json.dumps(payload), content_type='application/json')
+    data = json.loads(response.data.decode("utf-8"))
+    assert response.status_code == 200
+    assert data["https://www.google.com"]["status"] == "ok"
+    assert data["http://httpbin.org/post"]["status"] == "ok"
+
+
+def test_proxy_bad_url(client):
+    p1 = [
+        {
+            "url": "www.google.com"
+        }
+    ]
+    r1 = client.post("/proxy", data=json.dumps(p1), content_type='application/json')
+    d1 = json.loads(r1.data.decode("utf-8"))
+    assert d1["www.google.com"]["status"] == "error"
+    assert d1["www.google.com"]["reason"] == "MissingSchema"
+    p2 = [
+        {
+            "url": "https://www.ggooggllee.comm"
+        }
+    ]
+    r2 = client.post("/proxy", data=json.dumps(p2), content_type='application/json')
+    d2 = json.loads(r2.data.decode("utf-8"))
+    assert d2["https://www.ggooggllee.comm"]["status"] == "error"
+
+
+def test_proxy_bad_request(client):
+    p1 = {
+        "key1": "value1"
+    }
+    r1 = client.post("/proxy", data=json.dumps(p1), content_type='application/json')
+    assert r1.status_code == 400
+    p2 = [
+        {}
+    ]
+    r2 = client.post("/proxy", data=json.dumps(p2), content_type='application/json')
+    data = json.loads(r2.data.decode("utf-8"))
+    assert r2.status_code == 400
+    assert data == {"message": "url missing"}
