@@ -4,7 +4,7 @@
 # Infrabin
 **Warning: `infrabin` exposes sensitive endpoints and should NEVER be used on the public Internet.**
 
-`infrabin` can be used to simulate blue/green deployments, to test routing and failover and as a general swiss-knife for your infrastructure.
+`infrabin` is an HTTP server that exposes a set of JSON endpoints. It can be used to simulate blue/green deployments, to test routing and failover or as a general swiss-knife for your infrastructure.
 
 # Usage
 ```

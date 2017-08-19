@@ -87,7 +87,7 @@ def env(env_var):
 @app.route("/aws/<metadata_categories>")
 def aws(metadata_categories):
     try:
-        r = requests.get(AWS_METADATA_ENDPOINT + metadata_categories, timeout=1)
+        r = requests.get(AWS_METADATA_ENDPOINT + metadata_categories, timeout=3)
     except requests.exceptions.ConnectionError:
         return jsonify({"message": "aws metadata endpoint not available"}), 501
     if r.status_code == 404:
@@ -161,7 +161,7 @@ def proxy():
         url = e.get("url", None)
         if url:
             try:
-                r = requests.request(method=method, url=url, data=payload, timeout=1)
+                r = requests.request(method=method, url=url, data=payload, timeout=5)
                 response[url] = {
                     "status": "ok",
                     "status_code": r.status_code,
