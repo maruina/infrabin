@@ -85,9 +85,13 @@ def test_headers(client):
     assert data["headers"]["Host"] == "localhost"
 
 
-def test_network(client):
-    response = client.get("/network/lo0")
-    data = json.loads(response.data.decode("utf-8"))
+def test_networks(client):
+    response = client.get("/networks")
     assert response.status_code == 200
-    assert len(data["lo0"]) == 1
-    assert data["lo0"][0]["addr"] == "127.0.0.1"
+
+
+def test_network_missing(client):
+    response = client.get("/network/eth12345")
+    data = json.loads(response.data.decode("utf-8"))
+    assert response.status_code == 404
+    assert data == {"message": "interface eth12345 not available"}
