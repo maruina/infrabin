@@ -7,15 +7,7 @@ https://github.com/pypa/sampleproject
 
 # Always prefer setuptools over distutils
 from setuptools import setup, find_packages
-# To use a consistent encoding
-from codecs import open
-from os import path
 
-here = path.abspath(path.dirname(__file__))
-
-# Get the long description from the README file
-with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
-    long_description = f.read()
 
 setup(
     name='infrabin',
@@ -26,7 +18,6 @@ setup(
     version='0.0.2',
 
     description='Like httpbin, but for infrastructure',
-    long_description=long_description,
 
     # The project's main homepage.
     url='https://github.com/maruina/infrabin',
@@ -44,7 +35,7 @@ setup(
         #   3 - Alpha
         #   4 - Beta
         #   5 - Production/Stable
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 5 - Production',
 
         # Indicate who your project is intended for
         'Intended Audience :: Developers',
