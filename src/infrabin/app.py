@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import os
 import requests
+import netifaces
 from flask import Flask, jsonify, request
 from flask_cache import Cache
 from infrabin.helpers import status_code
@@ -21,11 +22,32 @@ def main():
 
 @app.route("/headers")
 def headers():
-    request_data = {}
-    request_data["method"] = request.method
-    request_data["headers"] = dict(request.headers)
-    request_data["origin"] = request.remote_addr
-    return jsonify(request_data)
+    data = dict()
+    data["method"] = request.method
+    data["headers"] = dict(request.headers)
+    data["origin"] = request.remote_addr
+    return jsonify(data)
+
+
+@app.route("/networks")
+@app.route("/network/<interface>")
+def network(interface=None):
+    if interface:
+        try:
+            netifaces.ifaddresses(interface)
+            interfaces = [interface]
+        except ValueError:
+            return jsonify({"message": "interface {} not available".format(interface)}), 404
+    else:
+        interfaces = netifaces.interfaces()
+
+    data = dict()
+    for i in interfaces:
+        try:
+            data[i] = netifaces.ifaddresses(i)[2]
+        except KeyError:
+            data[i] = {"message": "AF_INET data missing"}
+    return jsonify(data)
 
 
 @app.route("/healthcheck")
