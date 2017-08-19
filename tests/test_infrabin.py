@@ -83,3 +83,11 @@ def test_headers(client):
     assert data["headers"]["X-Meaning-Of-Life"] == "42"
     assert data["headers"]["User-Agent"] == "werkzeug/0.12.2"
     assert data["headers"]["Host"] == "localhost"
+
+
+def test_network(client):
+    response = client.get("/network/lo0")
+    data = json.loads(response.data.decode("utf-8"))
+    assert response.status_code == 200
+    assert len(data["lo0"]) == 1
+    assert data["lo0"][0]["addr"] == "127.0.0.1"
