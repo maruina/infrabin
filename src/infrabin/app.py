@@ -146,3 +146,35 @@ def replay(url):
         "replay": url
     }
     return jsonify(response)
+
+
+@app.route("/proxy", methods=["POST"])
+def proxy():
+    data = request.get_json()
+    if not data or not isinstance(data, list):
+        return status_code(400)
+
+    response = dict()
+    for e in data:
+        method = e.get("method", "GET")
+        payload = e.get("payload", None)
+        url = e.get("url", None)
+        if url:
+            try:
+                r = requests.request(method=method, url=url, data=payload, timeout=1)
+                response[url] = {
+                    "status": "ok",
+                    "status_code": r.status_code,
+                    # r.headers is of type requests.structures.CaseInsensitiveDict
+                    # We want to convert it to a dictionary to return it into the response
+                    "headers": dict(**r.headers)
+                }
+            except requests.exceptions.RequestException as e:
+                response[url] = {
+                    "status": "error",
+                    # Print the class exception name that should be self explanatory
+                    "reason": e.__class__.__name__
+                }
+        else:
+            return jsonify({"message": "url missing"}), 400
+    return jsonify(response)
