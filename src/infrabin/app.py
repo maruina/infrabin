@@ -161,7 +161,7 @@ def proxy():
         url = e.get("url", None)
         if url:
             try:
-                r = requests.request(method=method, url=url, data=payload, timeout=5)
+                r = requests.request(method=method.uppercase, url=url, data=payload, timeout=5)
                 response[url] = {
                     "status": "ok",
                     "status_code": r.status_code,
