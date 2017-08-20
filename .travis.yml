@@ -4,10 +4,11 @@ services:
 language: python
 python:
 - '3.6'
-install: pip install tox-travis
+install: pip install tox-travis coveralls
 script:
 - tox
 after_success:
+  - coveralls
   - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
   - export TAG=$(if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi)
   - docker build -f Dockerfile -t $TRAVIS_REPO_SLUG:$COMMIT .
