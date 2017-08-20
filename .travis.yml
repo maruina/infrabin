@@ -10,7 +10,7 @@ script:
 after_success:
   - coveralls
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
-    echo "Building $TRAVIS_BRANCH image from commit $COMMIT"
+    echo "Building $TRAVIS_BRANCH image from commit $COMMIT";
     docker login -u $DOCKER_USER -p $DOCKER_PASS;
     docker build -f Dockerfile -t $TRAVIS_REPO_SLUG:$COMMIT .;
     docker tag $TRAVIS_REPO_SLUG:$COMMIT $TRAVIS_REPO_SLUG:latest;
