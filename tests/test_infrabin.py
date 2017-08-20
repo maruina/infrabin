@@ -3,6 +3,8 @@ from __future__ import print_function
 import json
 import contextlib
 import os
+import gzip
+from io import BytesIO
 
 
 @contextlib.contextmanager
@@ -119,3 +121,13 @@ def test_status_custom(client):
     assert response.status_code == 200
     assert data["dns"]["status"] == "ok"
     assert data["egress"]["status"] == "ok"
+
+
+def test_gzip(client):
+    response = client.get("/gzip")
+    buffer = BytesIO(response.data)
+    encoded_message = gzip.GzipFile(mode='rb', fileobj=buffer).read()
+    data = json.loads(encoded_message.decode("utf-8"))
+    assert response.status_code == 200
+    assert response.headers["Content-Encoding"] == "gzip"
+    assert data == {"message": "this is gzip compressed"}
