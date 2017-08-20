@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/maruina/infrabin.svg?branch=master)](https://travis-ci.org/maruina/infrabin)
-
+[![Docker Pulls](https://img.shields.io/docker/pulls/maruina/infrabin.svg)](https://hub.docker.com/r/maruina/infrabin/)
 # Infrabin
 **Warning: `infrabin` exposes sensitive endpoints and should NEVER be used on the public Internet.**
 
