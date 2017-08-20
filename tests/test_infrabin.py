@@ -131,3 +131,10 @@ def test_gzip(client):
     assert response.status_code == 200
     assert response.headers["Content-Encoding"] == "gzip"
     assert data == {"message": "this is gzip compressed"}
+
+
+def test_replay(client):
+    response = client.get("/replay/meaning/of/life/42")
+    data = json.loads(response.data.decode("utf-8"))
+    assert response.status_code == 200
+    assert data["replay"] == "meaning/of/life/42"
