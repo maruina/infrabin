@@ -9,11 +9,11 @@ script:
 - tox
 after_success:
   - coveralls
-  - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-  - export TAG=$(if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi)
-  - docker build -f Dockerfile -t $TRAVIS_REPO_SLUG:$COMMIT .
-  - docker tag $TRAVIS_REPO_SLUG:$COMMIT $TRAVIS_REPO_SLUG:$TAG
-  - docker push $TRAVIS_REPO_SLUG
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+    docker login -u $DOCKER_USER -p $DOCKER_PASS;
+    docker build -f Dockerfile -t $TRAVIS_REPO_SLUG:$TRAVIS_BRANCH .
+    docker push $TRAVIS_REPO_SLUG;
+    fi
 env:
   global:
   - secure: m2McVltDg8cvR/Galx1xGixxu1WqnecyEzom6g5czXRNgYv1BtA6VISI5FUZQBH/k7XWTolbdRzjwkc20hX/GwGfYCVTWff67ZUfm/iKs/kdb7XK62Pq4/LblJhRm8p5JstM+JR/JHa5TEd0ubYMzOA1qx7etm0u0NHBIZi2y3B+1OsO8thhs31apEVfcGS8a3+1W5/iBYONKrfvA6nGli6snzZFprF95R3elnLw0PRFYpP7XL4ygTmGQTGwEqodGCXQm5/gTGw2WjxQ4oyB6gz1aeHUd+7hyFiGQkRY7wwDJmSRH0dSKcW/l7e3Q2520jmcpfHlPmRhhDB+0Ttcq4PfFFIi+I0/4K+Co+BrEFrDejrXqVtITvqWfkd3KvZ7Zc7tFgurNUIF2U44nR7Ti6CNLtKWH47N/25PcuNgwjUE0RiFYPP28b9FKBYw6XUlNBbHlDidXIg38RKBidn6Jr5s+Ek5drXECt5ggrmc667iTKfyabmURQqjGi4Pg7CjV8AyrmYQTe8KKUJkKbSe4KOiVgmsn+nS852qPqr0CDhIOWMUzqQIRI8fZyh7YxHylIrPqe/i/Rx8ev/t1oCLlPpqwR7JAcmjGaDBZZukscV3umyOa+sIQVhfHyWmq5fSh2LfAZApMca8uud1xfAyQdr30XYm5vzWTGGvpAxZfUs=
