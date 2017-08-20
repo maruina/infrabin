@@ -2,6 +2,9 @@ FROM python:3-alpine
 ENV PORT 8080
 ENV THREADS 16
 
+RUN apk add --no-cache gcc musl-dev linux-headers && \
+    rm -rf /var/cache/apk/*
+
 ADD . /infrabin
 RUN pip install infrabin/
 
