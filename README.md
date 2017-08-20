@@ -68,21 +68,23 @@ $ curl localhost:8080/replay/the/meaning/of/life/42
 # Development and Testing
 Clone the repository and create a local Python 3 virtual environment
 ```
-git clone git@github.com:maruina/infrabin.git
-cd infrabin
-virtualenv --no-site-packages --python=python3 env
-source env/bin/activate
+$ git clone git@github.com:maruina/infrabin.git
+$ cd infrabin
+$ virtualenv --no-site-packages --python=python3 env
+$ source env/bin/activate
 # Install dependencies
-pip install .
+$ pip install .
 ```
 Run `infrabin` locally
 ```
-FLASK_APP=src/infrabin/app.py flask run
+$ export FLASK_APP=src/infrabin/app.py
+$ export FLASK_DEBUG=1
+$ flask run
 ```
 Run the tests
 ```
-pip install pytest pytest-flask tox
-tox
+$ pip install pytest pytest-flask tox
+$ tox
 ```
 
 # Inspired by:
