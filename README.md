@@ -37,6 +37,8 @@ To override the default settings:
 * `POST /status`
     * _payload_: a JSON with a `nameservers` list, a `query` and an `egress_url`.
     * _returns_: same as `GET /status` or `400` if the request if malformed.
+* `GET /gzip`
+    * _returns_: the JSON `{"message": "this is gzip compressed"}` gzip compressed.
 
 ## Examples
 * `POST /status`

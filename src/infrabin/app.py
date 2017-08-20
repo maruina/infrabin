@@ -6,7 +6,7 @@ import netifaces
 import dns.resolver
 from flask import Flask, jsonify, request
 from flask_cache import Cache
-from infrabin.helpers import status_code
+from infrabin.helpers import status_code, gzipped
 
 
 app = Flask(__name__)
@@ -128,4 +128,13 @@ def status():
             "status": "error",
             "reason": e.__class__.__name__
         }
+    return jsonify(response)
+
+
+@app.route("/gzip")
+@gzipped
+def gzip():
+    response = {
+        "message": "this is gzip compressed"
+    }
     return jsonify(response)
