@@ -35,7 +35,7 @@ To override the default settings:
 * `GET /status`
     * _returns_: the JSON `{"dns":{"status": "ok"}, "egress": {"status": "ok"}}` if `infrabin` can resolve `google.com` using Google's DNS and can connect to `https://www.google.com`.
 * `POST /status`
-    * _payload_: a JSON with a list of `nameservers`, a `query` and an `egress_url`.
+    * _payload_: a JSON with a `nameservers` list, a `query` and an `egress_url`.
     * _returns_: same as `GET /status` or `400` if the request if malformed.
 
 ## Examples
