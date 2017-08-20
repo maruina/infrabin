@@ -32,7 +32,7 @@ To override the default settings:
 * `GET /env/<ENV_VAR>`
     * _returns_: the value of `env_var` or `404` if the environment variable does not exist.
 * `GET /aws/<METADATA_ENDPOINT>`
-    * _returns_: the value of the AWS `metadata_endpoint`, `501` if `infrabin` can not open the AWS metadata URL, or `404` if the metadata endpoint does not exist.
+    * _returns_: the value of the AWS `metadata_endpoint`, `501` if `infrabin` can not open the AWS metadata URL, or `404` if the metadata endpoint does not exist. See https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html#instancedata-data-categories for the available endpoints.
 * `GET /status`
     * _returns_: the JSON `{"dns":{"status": "ok"}, "egress": {"status": "ok"}}` if `infrabin` can resolve `google.com` using Google's DNS and can connect to `https://www.google.com`.
 * `POST /status`
