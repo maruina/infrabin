@@ -59,7 +59,7 @@ $ curl -d '{"nameservers":["208.67.222.222"],"query":"facebook.com","egress_url"
 ```
 * `GET /replay/<URL>`
 ```
-$ curl localhost:5000/replay/the/meaning/of/life/42
+$ curl localhost:8080/replay/the/meaning/of/life/42
 {
   "replay": "the/meaning/of/life/42"
 }
