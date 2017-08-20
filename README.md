@@ -32,7 +32,6 @@ To override the default settings:
 * `GET /env/<ENV_VAR>`
     * _returns_: the value of `env_var` or `404` if the environment variable does not exist.
 * `GET /aws/<METADATA_ENDPOINT>`
-<<<<<<< HEAD
     * _returns_: the value of the AWS `metadata_endpoint`, `501` if `infrabin` can not open the AWS metadata URL, or `404` if the metadata endpoint does not exist. See https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html#instancedata-data-categories for the available endpoints.
 * `GET /status`
     * _returns_: the JSON `{"dns":{"status": "ok"}, "egress": {"status": "ok"}}` if `infrabin` can resolve `google.com` using Google's DNS and can connect to `https://www.google.com`. If a test fails, `infrabin` returns `"status": "error"` and the `reason`.
@@ -44,8 +43,8 @@ To override the default settings:
 * `GET /replay/<URL>`
     * _returns_: a JSON with the requested url.
 * `POST /proxy`
-    * _parameters_: a JSON with a list of url (mandatory), method (optional) and payload (optional) to proxy.
-    * _returns_: `404` if the request if malformed or a JSON with the response of every url. If successful, the response contains `status: ok`, the `status_code` and the `headers`. If unsuccessful, the response contains `status: error` and the `reason`.
+    * _payload_: a JSON with a list of `url` (mandatory), `method` (optional) and `payload` (optional) to proxy.
+    * _returns_: `400` if the request if malformed or a JSON with the a response for every request. If successful, the response contains `status: ok`, the `status_code` and the `headers`. If unsuccessful, the response contains `status: error` and the `reason`.
 
 ## Examples
 * `POST /status`
