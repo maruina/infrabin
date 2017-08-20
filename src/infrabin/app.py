@@ -3,6 +3,7 @@ from __future__ import print_function
 import os
 import requests
 import netifaces
+import dns.resolver
 from flask import Flask, jsonify, request
 from flask_cache import Cache
 from infrabin.helpers import status_code
@@ -92,3 +93,39 @@ def aws(metadata_categories):
     if r.status_code == 404:
         return status_code(404)
     return jsonify({metadata_categories: r})
+
+
+@app.route("/status", methods=["GET", "POST"])
+def status():
+    response = dict()
+    data = request.get_json() or {}
+    # Test DNS
+    nameservers = data.get("nameservers", ["8.8.8.8", "8.8.4.4"])
+    if not isinstance(nameservers, list):
+        return status_code(400)
+    query = data.get("query", "google.com")
+    resolver = dns.resolver.Resolver()
+    resolver.nameservers = nameservers
+    try:
+        resolver.query(query)
+        response["dns"] = {
+            "status": "ok"
+        }
+    except dns.exception.DNSException as e:
+        response["dns"] = {
+            "status": "error",
+            "reason": e.__class__.__name__
+        }
+    # Test external connectivity
+    egress_url = data.get("egress_url", "https://www.google.com")
+    try:
+        requests.get(egress_url, timeout=3)
+        response["egress"] = {
+            "status": "ok"
+        }
+    except requests.exceptions.RequestException as e:
+        response["egress"] = {
+            "status": "error",
+            "reason": e.__class__.__name__
+        }
+    return jsonify(response)

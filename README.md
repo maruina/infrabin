@@ -32,6 +32,25 @@ To override the default settings:
     * _returns_: the value of `env_var` or `404` if the environment variable does not exist.
 * `GET /aws/<METADATA_ENDPOINT>`
     * _returns_: the value of the AWS `metadata_endpoint`, `501` if `infrabin` cannot open the AWS metadata URL, or `404` if the metadata endpoint does not exist.
+* `GET /status`
+    * _returns_: the JSON `{"dns":{"status": "ok"}, "egress": {"status": "ok"}}` if `infrabin` can resolve `google.com` using Google's DNS and can connect to `https://www.google.com`.
+* `POST /status`
+    * _payload_: a JSON with a `nameservers` list, a `query` and an `egress_url`.
+    * _returns_: same as `GET /status` or `400` if the request if malformed.
+
+## Examples
+* `POST /status`
+```
+$ curl -d '{"nameservers":["208.67.222.222"],"query":"facebook.com","egress_url":"https://www.facebook.com"}' -H "Content-Type: application/json" -X POST localhost:8080/status
+{
+  "dns": {
+    "status": "ok"
+  },
+  "egress": {
+    "status": "ok"
+  }
+}
+```
 
 # Development and Testing
 Clone the repository and create a local Python 3 virtual environment
