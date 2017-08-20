@@ -39,6 +39,9 @@ To override the default settings:
     * _returns_: same as `GET /status` or `400` if the request is malformed.
 * `GET /gzip`
     * _returns_: the JSON `{"message": "this is gzip compressed"}` gzip compressed.
+* `GET /replay/<URL>`
+    * _returns_: a JSON with the requested url.
+
 
 ## Examples
 * `POST /status`
@@ -51,6 +54,13 @@ $ curl -d '{"nameservers":["208.67.222.222"],"query":"facebook.com","egress_url"
   "egress": {
     "status": "ok"
   }
+}
+```
+* `GET /replay/<URL>`
+```
+$ curl localhost:5000/replay/the/meaning/of/life/42
+{
+  "replay": "the/meaning/of/life/42"
 }
 ```
 

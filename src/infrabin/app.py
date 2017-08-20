@@ -138,3 +138,11 @@ def gzip():
         "message": "this is gzip compressed"
     }
     return jsonify(response)
+
+
+@app.route("/replay/<path:url>")
+def replay(url):
+    response = {
+        "replay": url
+    }
+    return jsonify(response)
