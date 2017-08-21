@@ -4,6 +4,7 @@ import json
 import contextlib
 import os
 import gzip
+import time
 from io import BytesIO
 
 
@@ -193,3 +194,11 @@ def test_proxy_bad_request(client):
     data = json.loads(r2.data.decode("utf-8"))
     assert r2.status_code == 400
     assert data == {"message": "url missing"}
+
+
+def test_delay(client):
+    start = time.time()
+    response = client.get("/delay/1")
+    end = time.time()
+    assert int(end - start) == 1
+    assert response.status_code == 200

@@ -21,7 +21,7 @@ To override the default settings:
     * _returns_: a JSON with the request headers, method and origin IP address.
 * `GET /networks`
     * _returns_: a JSON with the `AF_INET` address family info for all the network interfaces.
-* `GET /network/<INTERFACE>`
+* `GET /network/<interface>`
     * _returns_: a JSON with the `AF_INET` address family info of the target interface or `404` if the network interface does not exist.
 * `GET /healthcheck`
     * _returns_: the JSON `{"message": "infrabin is healthy"}` if healthy or the status code `503` if unhealthy.
@@ -29,10 +29,10 @@ To override the default settings:
     * _returns_: `204` on success, resetting the `/healthcheck` endpoint to be healthy.
 * `POST /healthcheck/fail`
     * _returns_: `204` on success, forcing the `/healthcheck` endpoint to be unhealthy.
-* `GET /env/<ENV_VAR>`
+* `GET /env/<env_var>`
     * _returns_: the value of `env_var` or `404` if the environment variable does not exist.
-* `GET /aws/<METADATA_ENDPOINT>`
-    * _returns_: the value of the AWS `metadata_endpoint`, `501` if `infrabin` can not open the AWS metadata URL, or `404` if the metadata endpoint does not exist. See https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html#instancedata-data-categories for the available endpoints.
+* `GET /aws/<metadata_endpoint>`
+    * _returns_: the value of the target AWS `metadata_endpoint`, `501` if `infrabin` can not open the AWS metadata URL, or `404` if the metadata endpoint does not exist. See https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html#instancedata-data-categories for the available endpoints.
 * `GET /status`
     * _returns_: the JSON `{"dns":{"status": "ok"}, "egress": {"status": "ok"}}` if `infrabin` can resolve `google.com` using Google's DNS and can connect to `https://www.google.com`. If a test fails, `infrabin` returns `"status": "error"` and the `reason`.
 * `POST /status`
@@ -40,11 +40,13 @@ To override the default settings:
     * _returns_: same as `GET /status` or `400` if the request is malformed.
 * `GET /gzip`
     * _returns_: the JSON `{"message": "this is gzip compressed"}` gzip compressed.
-* `GET /replay/<URL>`
+* `GET /replay/<url>`
     * _returns_: a JSON with the requested url.
 * `POST /proxy`
     * _payload_: a JSON with a list of `url` (mandatory), `method` (optional) and `payload` (optional) to proxy.
     * _returns_: `400` if the request if malformed or a JSON with the a response for every request. If successful, the response contains `status: ok`, the `status_code` and the `headers`. If unsuccessful, the response contains `status: error` and the `reason`.
+* `GET /delay/<sec>`
+    * _returns_: `200` after `min(<sec>, 120)` seconds.
 
 ## Examples
 * `POST /status`
