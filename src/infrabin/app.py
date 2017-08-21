@@ -4,6 +4,7 @@ import os
 import requests
 import netifaces
 import dns.resolver
+import time
 from flask import Flask, jsonify, request
 from flask_cache import Cache
 from infrabin.helpers import status_code, gzipped
@@ -178,3 +179,9 @@ def proxy():
         else:
             return jsonify({"message": "url missing"}), 400
     return jsonify(response)
+
+
+@app.route("/delay/<int:sec>")
+def delay(sec):
+    time.sleep(min(sec, 120))
+    return status_code(200)
