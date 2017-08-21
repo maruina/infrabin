@@ -26,9 +26,9 @@ To override the default settings:
 * `GET /healthcheck`
     * _returns_: the JSON `{"message": "infrabin is healthy"}` if healthy or the status code `503` if unhealthy.
 * `POST /healthcheck/pass`
-    * _returns_: status code `204` on success, resetting the `/healthcheck` endpoint to be healthy.
+    * _returns_: `204` on success, resetting the `/healthcheck` endpoint to be healthy.
 * `POST /healthcheck/fail`
-    * _returns_: status code `204` on success, forcing the `/healthcheck` endpoint to be unhealthy.
+    * _returns_: `204` on success, forcing the `/healthcheck` endpoint to be unhealthy.
 * `GET /env/<ENV_VAR>`
     * _returns_: the value of `env_var` or `404` if the environment variable does not exist.
 * `GET /aws/<METADATA_ENDPOINT>`
