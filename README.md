@@ -4,7 +4,7 @@
 # Infrabin
 **Warning: `infrabin` exposes sensitive endpoints and should NEVER be used on the public Internet.**
 
-`infrabin` can be used to simulate blue/green deployments, to test routing and failover and as a general swiss-knife for your infrastructure.
+`infrabin` is an HTTP server that exposes a set of JSON endpoints. It can be used to simulate blue/green deployments, to test routing and failover or as a general swiss-knife for your infrastructure.
 
 # Usage
 ```
@@ -42,7 +42,9 @@ To override the default settings:
     * _returns_: the JSON `{"message": "this is gzip compressed"}` gzip compressed.
 * `GET /replay/<URL>`
     * _returns_: a JSON with the requested url.
-
+* `POST /proxy`
+    * _payload_: a JSON with a list of `url` (mandatory), `method` (optional) and `payload` (optional) to proxy.
+    * _returns_: `400` if the request if malformed or a JSON with the a response for every request. If successful, the response contains `status: ok`, the `status_code` and the `headers`. If unsuccessful, the response contains `status: error` and the `reason`.
 
 ## Examples
 * `POST /status`
@@ -62,6 +64,46 @@ $ curl -d '{"nameservers":["208.67.222.222"],"query":"facebook.com","egress_url"
 $ curl localhost:8080/replay/the/meaning/of/life/42
 {
   "replay": "the/meaning/of/life/42"
+}
+```
+* `POST /proxy`
+```
+$ curl -d '[{"url":"https://www.google.com"},{"url":"http://httpbin.org/post","method":"POST","payload":{"key":"42"}}]' -H "Content-Type: application/json" -X POST localhost:8080/proxy
+{
+  "http://httpbin.org/post": {
+    "headers": {
+      "Access-Control-Allow-Credentials": "true",
+      "Access-Control-Allow-Origin": "*",
+      "Connection": "keep-alive",
+      "Content-Length": "435",
+      "Content-Type": "application/json",
+      "Date": "Sat, 19 Aug 2017 23:39:35 GMT",
+      "Server": "meinheld/0.6.1",
+      "Via": "1.1 vegur",
+      "X-Powered-By": "Flask",
+      "X-Processed-Time": "0.00157999992371"
+    },
+    "status": "ok",
+    "status_code": 200
+  },
+  "https://www.google.com": {
+    "headers": {
+      "Alt-Svc": "quic=\":443\"; ma=2592000; v=\"39,38,37,35\"",
+      "Cache-Control": "private, max-age=0",
+      "Content-Encoding": "gzip",
+      "Content-Type": "text/html; charset=ISO-8859-1",
+      "Date": "Sat, 19 Aug 2017 23:39:35 GMT",
+      "Expires": "-1",
+      "P3P": "CP=\"This is not a P3P policy! See https://www.google.com/support/accounts/answer/151657?hl=en for more info.\"",
+      "Server": "gws",
+      "Set-Cookie": "NID=110=gR5VUAdefT9VbTSdOHEaiP-_ryClfvAV3ovON-uOh7d59L8YsQjkQsbDwSNMwEl0JOj-7aXIQnbceL5WGZGnmbz9GFWFHsHPqRsCPaquyHIsboWMNkzhVr4Te2E6-D94; expires=Sun, 18-Feb-2018 23:39:35 GMT; path=/; domain=.google.co.uk; HttpOnly",
+      "Transfer-Encoding": "chunked",
+      "X-Frame-Options": "SAMEORIGIN",
+      "X-XSS-Protection": "1; mode=block"
+    },
+    "status": "ok",
+    "status_code": 200
+  }
 }
 ```
 

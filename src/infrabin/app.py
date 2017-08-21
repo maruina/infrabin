@@ -87,7 +87,7 @@ def env(env_var):
 @app.route("/aws/<metadata_categories>")
 def aws(metadata_categories):
     try:
-        r = requests.get(AWS_METADATA_ENDPOINT + metadata_categories, timeout=1)
+        r = requests.get(AWS_METADATA_ENDPOINT + metadata_categories, timeout=3)
     except requests.exceptions.ConnectionError:
         return jsonify({"message": "aws metadata endpoint not available"}), 501
     if r.status_code == 404:
@@ -145,4 +145,36 @@ def replay(url):
     response = {
         "replay": url
     }
+    return jsonify(response)
+
+
+@app.route("/proxy", methods=["POST"])
+def proxy():
+    data = request.get_json()
+    if not data or not isinstance(data, list):
+        return status_code(400)
+
+    response = dict()
+    for e in data:
+        method = e.get("method", "GET")
+        payload = e.get("payload", None)
+        url = e.get("url", None)
+        if url:
+            try:
+                r = requests.request(method=method.upper(), url=url, data=payload, timeout=5)
+                response[url] = {
+                    "status": "ok",
+                    "status_code": r.status_code,
+                    # r.headers is of type requests.structures.CaseInsensitiveDict
+                    # We want to convert it to a dictionary to return it into the response
+                    "headers": dict(**r.headers)
+                }
+            except requests.exceptions.RequestException as e:
+                response[url] = {
+                    "status": "error",
+                    # Print the class exception name that should be self explanatory
+                    "reason": e.__class__.__name__
+                }
+        else:
+            return jsonify({"message": "url missing"}), 400
     return jsonify(response)
