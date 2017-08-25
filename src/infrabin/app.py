@@ -4,6 +4,7 @@ import os
 import requests
 import netifaces
 import dns.resolver
+import json
 import time
 from flask import Flask, jsonify, request
 from flask_cache import Cache
@@ -93,7 +94,7 @@ def aws(metadata_categories):
         return jsonify({"message": "aws metadata endpoint not available"}), 501
     if r.status_code == 404:
         return status_code(404)
-    return jsonify({metadata_categories: r})
+    return jsonify({metadata_categories: json.dumps(r.text)})
 
 
 @app.route("/status", methods=["GET", "POST"])
