@@ -17,7 +17,7 @@ after_success:
     if [ ! -z "$TRAVIS_TAG"]; then
     echo "Tagging image";
     docker tag $TRAVIS_REPO_SLUG:$latest $TRAVIS_REPO_SLUG:$TRAVIS_TAG;
-    fi
+    fi;
     docker push $TRAVIS_REPO_SLUG;
     fi
 env:
