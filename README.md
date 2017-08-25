@@ -23,12 +23,18 @@ To override the default settings:
     * _returns_: a JSON with the `AF_INET` address family info for all the network interfaces.
 * `GET /network/<interface>`
     * _returns_: a JSON with the `AF_INET` address family info of the target interface or `404` if the network interface does not exist.
-* `GET /healthcheck`
-    * _returns_: the JSON `{"message": "infrabin is healthy"}` if healthy or the status code `503` if unhealthy.
-* `POST /healthcheck/pass`
-    * _returns_: `204` on success, resetting the `/healthcheck` endpoint to be healthy.
-* `POST /healthcheck/fail`
-    * _returns_: `204` on success, forcing the `/healthcheck` endpoint to be unhealthy.
+* `GET /healthcheck/liveness`
+    * _returns_: the JSON `{"message": "liveness probe healthy"}` if healthy or the status code `503` if unhealthy.
+* `POST /healthcheck/liveness/pass`
+    * _returns_: `204` on success, resetting the `/healthcheck/liveness` endpoint to be healthy.
+* `POST /healthcheck/liveness/fail`
+    * _returns_: `204` on success, forcing the `/healthcheck/liveness` endpoint to be unhealthy.
+* `GET /healthcheck/readiness`
+    * _returns_: the JSON `{"message": "readiness probe healthy"}` if healthy or the status code `503` if unhealthy.
+* `POST /healthcheck/readiness/pass`
+    * _returns_: `204` on success, resetting the `/healthcheck/readiness` endpoint to be healthy.
+* `POST /healthcheck/readiness/fail`
+    * _returns_: `204` on success, forcing the `/healthcheck/readiness` endpoint to be unhealthy.
 * `GET /env/<env_var>`
     * _returns_: the value of `env_var` or `404` if the environment variable does not exist.
 * `GET /aws/<metadata_endpoint>`

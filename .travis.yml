@@ -13,8 +13,11 @@ after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
     echo "Building $TRAVIS_BRANCH image from commit $COMMIT";
     docker login -u $DOCKER_USER -p $DOCKER_PASS;
-    docker build -f Dockerfile -t $TRAVIS_REPO_SLUG:$COMMIT .;
-    docker tag $TRAVIS_REPO_SLUG:$COMMIT $TRAVIS_REPO_SLUG:latest;
+    docker build -f Dockerfile -t $TRAVIS_REPO_SLUG:latest .;
+    if [ ! -z "$TRAVIS_TAG"]; then
+    echo "Tagging image";
+    docker tag $TRAVIS_REPO_SLUG:$latest $TRAVIS_REPO_SLUG:$TRAVIS_TAG;
+    fi
     docker push $TRAVIS_REPO_SLUG;
     fi
 env:

@@ -13,7 +13,8 @@ from infrabin.helpers import status_code, gzipped
 app = Flask(__name__)
 cache = Cache(app, config={"CACHE_TYPE": "simple"})
 
-is_healthy = True
+liveness_healthy = True
+readiness_healthy = True
 AWS_METADATA_ENDPOINT = "http://169.254.169.254/latest/meta-data/"
 
 
@@ -52,26 +53,49 @@ def network(interface=None):
     return jsonify(data)
 
 
-@app.route("/healthcheck")
-def healthcheck():
-    global is_healthy
-    if is_healthy:
-        return jsonify({"message": "infrabin is healthy"})
+@app.route("/healthcheck/liveness")
+def healthcheck_liveness():
+    global liveness_healthy
+    if liveness_healthy:
+        return jsonify({"message": "liveness probe healthy"})
     else:
         return status_code(503)
 
 
-@app.route("/healthcheck/pass", methods=["POST"])
-def healthcheck_pass():
-    global is_healthy
-    is_healthy = True
+@app.route("/healthcheck/liveness/pass", methods=["POST"])
+def healthcheck_liveness_pass():
+    global liveness_healthy
+    liveness_healthy = True
     return status_code(204)
 
 
-@app.route("/healthcheck/fail", methods=["POST"])
-def healthcheck_fail():
-    global is_healthy
-    is_healthy = False
+@app.route("/healthcheck/liveness/fail", methods=["POST"])
+def healthcheck_liveness_fail():
+    global liveness_healthy
+    liveness_healthy = False
+    return status_code(204)
+
+
+@app.route("/healthcheck/readiness")
+def healthcheck_readiness():
+    global readiness_healthy
+    if readiness_healthy:
+        return jsonify({"message": "readiness probe healthy"})
+    else:
+        return status_code(503)
+
+
+@app.route("/healthcheck/readiness/pass", methods=["POST"])
+def healthcheck_readiness_pass():
+    global readiness_healthy
+    readiness_healthy = True
+    return status_code(204)
+
+
+@app.route("/healthcheck/readiness/fail", methods=["POST"])
+def healthcheck_readiness_fail():
+    global readiness_healthy
+    readiness_healthy = False
     return status_code(204)
 
 
