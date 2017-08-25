@@ -32,31 +32,58 @@ def test_main(client):
     assert data == {"message": "infrabin is running"}
 
 
-def test_healthcheck_pass(client):
-    response = client.get("/healthcheck")
+def test_healthcheck_liveness_pass(client):
+    response = client.get("/healthcheck/liveness")
     data = json.loads(response.data.decode("utf-8"))
     assert response.status_code == 200
-    assert data == {"message": "infrabin is healthy"}
+    assert data == {"message": "liveness probe healthy"}
 
 
-def test_healthcheck_fail(client):
-    post = client.post("/healthcheck/fail")
+def test_healthcheck_liveness_fail(client):
+    post = client.post("/healthcheck/liveness/fail")
     assert post.status_code == 204
-    get = client.get("/healthcheck")
+    get = client.get("/healthcheck/liveness")
     assert get.status_code == 503
 
 
-def test_healthcheck_switch(client):
-    post_fail = client.post("/healthcheck/fail")
+def test_healthcheck_liveness_switch(client):
+    post_fail = client.post("/healthcheck/liveness/fail")
     assert post_fail.status_code == 204
-    get_fail = client.get("/healthcheck")
+    get_fail = client.get("/healthcheck/liveness")
     assert get_fail.status_code == 503
-    post_pass = client.post("/healthcheck/pass")
+    post_pass = client.post("/healthcheck/liveness/pass")
     assert post_pass.status_code == 204
-    get_pass = client.get("/healthcheck")
+    get_pass = client.get("/healthcheck/liveness")
     get_pass_data = json.loads(get_pass.data.decode("utf-8"))
     assert get_pass.status_code == 200
-    assert get_pass_data == {"message": "infrabin is healthy"}
+    assert get_pass_data == {"message": "liveness probe healthy"}
+
+
+def test_healthcheck_readiness_pass(client):
+    response = client.get("/healthcheck/readiness")
+    data = json.loads(response.data.decode("utf-8"))
+    assert response.status_code == 200
+    assert data == {"message": "readiness probe healthy"}
+
+
+def test_healthcheck_readiness_fail(client):
+    post = client.post("/healthcheck/readiness/fail")
+    assert post.status_code == 204
+    get = client.get("/healthcheck/readiness")
+    assert get.status_code == 503
+
+
+def test_healthcheck_readiness_switch(client):
+    post_fail = client.post("/healthcheck/readiness/fail")
+    assert post_fail.status_code == 204
+    get_fail = client.get("/healthcheck/readiness")
+    assert get_fail.status_code == 503
+    post_pass = client.post("/healthcheck/readiness/pass")
+    assert post_pass.status_code == 204
+    get_pass = client.get("/healthcheck/readiness")
+    get_pass_data = json.loads(get_pass.data.decode("utf-8"))
+    assert get_pass.status_code == 200
+    assert get_pass_data == {"message": "readiness probe healthy"}
 
 
 def test_env_if_present(client):
