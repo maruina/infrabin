@@ -5,7 +5,9 @@ import contextlib
 import os
 import gzip
 import time
+import pytest
 from io import BytesIO
+from infrabin.app import ALL_METHODS
 
 
 @contextlib.contextmanager
@@ -23,6 +25,11 @@ def _setenv(key, value):
         os.environ.pop(key, None)
     else:
         os.environ[key] = value
+
+
+@pytest.fixture(params=ALL_METHODS)
+def method(request):
+    return request.param
 
 
 def test_main(client):
@@ -161,11 +168,23 @@ def test_gzip(client):
     assert data == {"message": "this is gzip compressed"}
 
 
-def test_replay(client):
-    response = client.get("/replay/meaning/of/life/42")
-    data = json.loads(response.data.decode("utf-8"))
+def test_replay(client, method):
+    response = client.open(path="/replay", method=method)
+    print("Testing method {}".format(method))
     assert response.status_code == 200
-    assert data["replay"] == "meaning/of/life/42"
+    if method is not "HEAD":
+        data = json.loads(response.data.decode("utf-8"))
+        assert data["method"] == method
+
+
+def test_replay_anything(client, method):
+    response = client.open(path="/replay/meaning/of/life/42", method=method)
+    print("Testing method {}".format(method))
+    assert response.status_code == 200
+    if method is not "HEAD":
+        data = json.loads(response.data.decode("utf-8"))
+        assert data["replay"] == "meaning/of/life/42"
+        assert data["method"] == method
 
 
 def test_proxy(client):

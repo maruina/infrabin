@@ -46,8 +46,10 @@ To override the default settings:
     * _returns_: same as `GET /status` or `400` if the request is malformed.
 * `GET /gzip`
     * _returns_: the JSON `{"message": "this is gzip compressed"}` gzip compressed.
-* `GET /replay/<url>`
-    * _returns_: a JSON with the requested url.
+* `GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH /replay`
+    * _returns_: a JSON with the requested method (except for the `HEAD` method).
+* `GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH /replay/<anything>`
+    * _returns_: a JSON with the requested string as `replay` (except for the `HEAD` method) and method.
 * `POST /proxy`
     * _payload_: a JSON with a list of `url` (mandatory), `method` (optional) and `payload` (optional) to proxy.
     * _returns_: `400` if the request if malformed or a JSON with the a response for every request. If successful, the response contains `status: ok`, the `status_code` and the `headers`. If unsuccessful, the response contains `status: error` and the `reason`.

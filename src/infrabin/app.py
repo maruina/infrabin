@@ -16,6 +16,7 @@ cache = Cache(app, config={"CACHE_TYPE": "simple"})
 liveness_healthy = True
 readiness_healthy = True
 AWS_METADATA_ENDPOINT = "http://169.254.169.254/latest/meta-data/"
+ALL_METHODS = ["GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH"]
 
 
 @app.route("/")
@@ -165,11 +166,14 @@ def gzip():
     return jsonify(response)
 
 
-@app.route("/replay/<path:url>")
-def replay(url):
+@app.route("/replay", methods=ALL_METHODS)
+@app.route("/replay/<path:anything>", methods=ALL_METHODS)
+def replay(anything=None):
     response = {
-        "replay": url
+        "method": request.method
     }
+    if anything:
+        response["replay"] = anything
     return jsonify(response)
 
 
