@@ -59,7 +59,7 @@ setup(
     # simple. Or you can use find_packages().
     packages=find_packages("src", exclude=['contrib', 'docs', 'tests']),
     package_dir={'': 'src'},
-    install_requires=['Flask', 'requests', 'Flask-Cache', 'waitress',
+    install_requires=['Flask', 'requests', 'Flask-Caching', 'waitress',
                       'netifaces', 'dnspython', 'decorator', 'six'],
     setup_requires=['pytest-runner'],
     tests_requires=['pytest', 'pytest-flask', 'tox'],

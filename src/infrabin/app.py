@@ -6,7 +6,7 @@ import netifaces
 import dns.resolver
 import time
 from flask import Flask, jsonify, request
-from flask_cache import Cache
+from flask_caching import Cache
 from infrabin.helpers import status_code, gzipped
 
 
@@ -84,8 +84,8 @@ def env(env_var):
         return jsonify({env_var: value})
 
 
-@cache.memoize()
-@app.route("/aws/<metadata_categories>")
+@app.route("/aws/<path:metadata_categories>")
+@cache.memoize(timeout=60)
 def aws(metadata_categories):
     try:
         r = requests.get(AWS_METADATA_ENDPOINT + metadata_categories, timeout=3)
