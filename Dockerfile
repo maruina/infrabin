@@ -1,6 +1,7 @@
 FROM python:3-alpine
 ENV PORT 8080
 ENV THREADS 16
+ENV MAX_DELAY 120
 
 RUN apk add --no-cache gcc musl-dev linux-headers && \
     rm -rf /var/cache/apk/*
