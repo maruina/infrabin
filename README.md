@@ -11,9 +11,9 @@
 docker run -d -p 8080:8080 maruina/infrabin
 ```
 To override the default settings:
-* `-e PORT=<PORT>` to change `infrabin` listening port.
-* `-e THREADS=<THREADS>` to change `waitress` threads number.
-* `-e MAX_DELAY=<MAX_DELAY>` to change the maximum value for the `/delay` endpoint.
+* `-e PORT=<PORT>` to change `infrabin` listening port. Default to 8080.
+* `-e THREADS=<THREADS>` to change `waitress` threads number. Default to 16.
+* `-e MAX_DELAY=<MAX_DELAY>` to change the maximum value for the `/delay` endpoint. Default to 120.
 
 # Endpoints
 * `GET /`
