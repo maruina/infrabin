@@ -11,8 +11,9 @@
 docker run -d -p 8080:8080 maruina/infrabin
 ```
 To override the default settings:
-* `-e PORT=<PORT>` will change `infrabin` listening port.
-* `-e THREADS=<THREADS>` will change `waitress` threads number.
+* `-e PORT=<PORT>` to change `infrabin` listening port.
+* `-e THREADS=<THREADS>` to change `waitress` threads number.
+* `-e MAX_DELAY=<MAX_DELAY>` to change the maximum value for the `/delay` endpoint.
 
 # Endpoints
 * `GET /`
@@ -54,7 +55,7 @@ To override the default settings:
     * _payload_: a JSON with a list of `url` (mandatory), `method` (optional) and `payload` (optional) to proxy.
     * _returns_: `400` if the request if malformed or a JSON with the a response for every request. If successful, the response contains `status: ok`, the `status_code` and the `headers`. If unsuccessful, the response contains `status: error` and the `reason`.
 * `GET /delay/<sec>`
-    * _returns_: `200` after `min(<sec>, 120)` seconds.
+    * _returns_: `200` after `min(<sec>, <MAX_DELAY>)` seconds.
 
 ## Examples
 * `POST /status`

@@ -248,3 +248,12 @@ def test_delay(client):
     end = time.time()
     assert int(end - start) == 1
     assert response.status_code == 200
+
+
+def test_delay_max(client):
+    with _setenv("MAX_DELAY", "2"):
+        start = time.time()
+        response = client.get("/delay/10")
+        end = time.time()
+        assert int(end - start) == 2
+        assert response.status_code == 200

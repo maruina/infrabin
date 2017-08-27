@@ -211,5 +211,6 @@ def proxy():
 
 @app.route("/delay/<int:sec>")
 def delay(sec):
-    time.sleep(min(sec, 120))
+    max_delay = int(os.getenv("MAX_DELAY", 120))
+    time.sleep(min(sec, max_delay))
     return status_code(200)
