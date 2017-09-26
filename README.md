@@ -17,7 +17,7 @@ To override the default settings:
 
 # Endpoints
 * `GET /`
-    * _returns_: the JSON `{"message": "infrabin is running"}`.
+    * _returns_: a JSON with the server hostname and `{"message": "infrabin is running"}`.
 * `GET /headers`
     * _returns_: a JSON with the request headers, method and origin IP address.
 * `GET /networks`

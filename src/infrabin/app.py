@@ -5,6 +5,7 @@ import requests
 import netifaces
 import dns.resolver
 import time
+import socket
 from flask import Flask, jsonify, request
 from flask_caching import Cache
 from infrabin.helpers import status_code, gzipped
@@ -21,7 +22,10 @@ ALL_METHODS = ["GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TR
 
 @app.route("/")
 def main():
-    return jsonify({"message": "infrabin is running"})
+    data = dict()
+    data["hostname"] = socket.gethostname()
+    data["message"] = "infrabin is running"
+    return jsonify(data)
 
 
 @app.route("/headers")

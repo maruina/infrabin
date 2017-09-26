@@ -6,6 +6,7 @@ import os
 import gzip
 import time
 import pytest
+import socket
 from io import BytesIO
 from infrabin.app import ALL_METHODS
 
@@ -35,8 +36,10 @@ def method(request):
 def test_main(client):
     response = client.get("/")
     data = json.loads(response.data.decode("utf-8"))
+    hostname = socket.gethostname()
     assert response.status_code == 200
-    assert data == {"message": "infrabin is running"}
+    assert data["message"] == "infrabin is running"
+    assert data["hostname"] = hostname
 
 
 def test_healthcheck_liveness_pass(client):
