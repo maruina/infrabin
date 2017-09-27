@@ -39,7 +39,7 @@ def test_main(client):
     hostname = socket.gethostname()
     assert response.status_code == 200
     assert data["message"] == "infrabin is running"
-    assert data["hostname"] = hostname
+    assert data["hostname"] == hostname
 
 
 def test_healthcheck_liveness_pass(client):
