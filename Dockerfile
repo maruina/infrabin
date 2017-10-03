@@ -3,7 +3,7 @@ ENV PORT 8080
 ENV THREADS 16
 ENV MAX_DELAY 120
 
-RUN apk add --no-cache gcc musl-dev linux-headers && \
+RUN apk add --no-cache gcc musl-dev linux-headers curl && \
     rm -rf /var/cache/apk/*
 
 ADD . /infrabin
