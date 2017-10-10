@@ -138,7 +138,7 @@ def test_network_missing(client):
 
 
 def test_connectivity(client):
-    response = client.get("/test_connectivity")
+    response = client.get("/connectivity")
     data = json.loads(response.data.decode("utf-8"))
     assert response.status_code == 200
     assert data["dns"]["status"] == "ok"
