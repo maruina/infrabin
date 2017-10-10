@@ -6,6 +6,7 @@ import netifaces
 import dns.resolver
 import time
 import socket
+import random
 from flask import Flask, jsonify, request
 from flask_caching import Cache
 from infrabin.helpers import status_code, gzipped
@@ -220,6 +221,6 @@ def delay(sec):
     return status_code(200)
 
 
-@app.route("status/<int:codes>")
-def status(codes):
-    return status_code(codes)
+@app.route("/status/<int:code>")
+def status(code):
+    return status_code(code)
