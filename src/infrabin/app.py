@@ -6,6 +6,7 @@ import netifaces
 import dns.resolver
 import time
 import socket
+import random
 from flask import Flask, jsonify, request
 from flask_caching import Cache
 from infrabin.helpers import status_code, gzipped
@@ -125,8 +126,8 @@ def aws(metadata_categories):
     return jsonify({metadata_categories: r.text})
 
 
-@app.route("/status", methods=["GET", "POST"])
-def status():
+@app.route("/connectivity", methods=["GET", "POST"])
+def connectivity():
     response = dict()
     data = request.get_json() or {}
     # Test DNS
@@ -218,3 +219,8 @@ def delay(sec):
     max_delay = int(os.getenv("MAX_DELAY", 120))
     time.sleep(min(sec, max_delay))
     return status_code(200)
+
+
+@app.route("/status/<int:code>")
+def status(code):
+    return status_code(code)

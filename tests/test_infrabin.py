@@ -137,15 +137,15 @@ def test_network_missing(client):
     assert data == {"message": "interface eth12345 not available"}
 
 
-def test_status(client):
-    response = client.get("/status")
+def test_connectivity(client):
+    response = client.get("/connectivity")
     data = json.loads(response.data.decode("utf-8"))
     assert response.status_code == 200
     assert data["dns"]["status"] == "ok"
     assert data["egress"]["status"] == "ok"
 
 
-def test_status_custom(client):
+def test_connectivity_custom(client):
     # TODO: fix test mocking opendns and facebook.com to remove external dependencies
     payload = {
         "nameservers": [
@@ -154,7 +154,7 @@ def test_status_custom(client):
         "query": "facebook.com",
         "egress_url": "https://www.facebook.com"
     }
-    response = client.post("/status", data=json.dumps(payload), content_type='application/json')
+    response = client.post("/connectivity", data=json.dumps(payload), content_type='application/json')
     data = json.loads(response.data.decode("utf-8"))
     assert response.status_code == 200
     assert data["dns"]["status"] == "ok"
@@ -260,3 +260,8 @@ def test_delay_max(client):
         end = time.time()
         assert int(end - start) == 2
         assert response.status_code == 200
+
+
+def test_status(client):
+    response = client.get("/status/200")
+    assert response.status_code == 200
