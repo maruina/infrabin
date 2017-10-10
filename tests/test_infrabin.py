@@ -154,7 +154,9 @@ def test_connectivity_custom(client):
         "query": "facebook.com",
         "egress_url": "https://www.facebook.com"
     }
-    response = client.post("/connectivity", data=json.dumps(payload), content_type='application/json')
+    response = client.post("/connectivity",
+                           data=json.dumps(payload),
+                           content_type='application/json')
     data = json.loads(response.data.decode("utf-8"))
     assert response.status_code == 200
     assert data["dns"]["status"] == "ok"
@@ -265,3 +267,35 @@ def test_delay_max(client):
 def test_status(client):
     response = client.get("/status/200")
     assert response.status_code == 200
+
+
+def test_retry(client):
+    # Default three 503, one 200
+    response = client.get("/retry")
+    assert response.status_code == 503
+    response = client.get("/retry")
+    assert response.status_code == 503
+    response = client.get("/retry")
+    assert response.status_code == 503
+    response = client.get("/retry")
+    assert response.status_code == 200
+
+
+def test_retry_custom(client):
+    post = client.post("/retry/2")
+    assert post.status_code == 204
+    response = client.get("/retry")
+    assert response.status_code == 503
+    response = client.get("/retry")
+    assert response.status_code == 503
+    response = client.get("/retry")
+    assert response.status_code == 200
+
+
+def test_retry_status(client):
+    post = client.post("/retry/2")
+    assert post.status_code == 204
+    response = client.get("/retry/max_retries")
+    data = json.loads(response.data.decode("utf-8"))
+    assert response.status_code == 200
+    assert data["max_retries"] == 2

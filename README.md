@@ -58,6 +58,12 @@ To override the default settings:
     * _returns_: `200` after `min(<sec>, <MAX_DELAY>)` seconds.
 * `GET /status/<status_code>`
     * _returns_: the requested `status_code`.
+* `GET /retry`
+    * _returns_: `503` for 3 times or `max_retries`, then one `200`.
+* `POST /retry/<retries>`
+    * _returns_: `204` on success, setting the maximum number of retries for the `/retry` endpoint to `<retries>`.
+* `GET /retry/max_retries`
+    * _returns_: the current value for the maximum number of retries.
 
 ## Examples
 * `POST /status`
