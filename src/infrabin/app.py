@@ -6,7 +6,6 @@ import netifaces
 import dns.resolver
 import time
 import socket
-import random
 from flask import Flask, jsonify, request
 from flask_caching import Cache
 from infrabin.helpers import status_code, gzipped
@@ -17,6 +16,8 @@ cache = Cache(app, config={"CACHE_TYPE": "simple"})
 
 liveness_healthy = True
 readiness_healthy = True
+retries = 0
+max_retries = 3
 AWS_METADATA_ENDPOINT = "http://169.254.169.254/latest/meta-data/"
 ALL_METHODS = ["GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH"]
 
@@ -224,3 +225,28 @@ def delay(sec):
 @app.route("/status/<int:code>")
 def status(code):
     return status_code(code)
+
+
+@app.route("/retry")
+@app.route("/retry/<int:max_ret>", methods=["POST"])
+def retry(max_ret=None):
+    global retries
+    global max_retries
+
+    if max_ret:
+        print(max_ret)
+        max_retries = max_ret
+        return status_code(204)
+
+    if retries < max_retries:
+        retries += 1
+        return status_code(503)
+    else:
+        retries = 0
+        return status_code(200)
+
+
+@app.route("/retry/max_retries")
+def max_retries_status():
+    global max_retries
+    return jsonify({"max_retries": max_retries}), 200
