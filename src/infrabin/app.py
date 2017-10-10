@@ -125,8 +125,8 @@ def aws(metadata_categories):
     return jsonify({metadata_categories: r.text})
 
 
-@app.route("/status", methods=["GET", "POST"])
-def status():
+@app.route("/connectivity", methods=["GET", "POST"])
+def connectivity():
     response = dict()
     data = request.get_json() or {}
     # Test DNS
@@ -218,3 +218,8 @@ def delay(sec):
     max_delay = int(os.getenv("MAX_DELAY", 120))
     time.sleep(min(sec, max_delay))
     return status_code(200)
+
+
+@app.route("status/<int:codes>")
+def status(codes):
+    return status_code(codes)
