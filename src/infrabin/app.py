@@ -189,6 +189,15 @@ def proxy():
     if not data or not isinstance(data, list):
         return status_code(400)
 
+    http_proxy = os.getenv("http_proxy", None)
+    if http_proxy:
+        proxies = {
+            "http": "http://{}".format(http_proxy),
+            "https": "http://{}".format(http_proxy)
+        }
+    else:
+        proxies = None
+
     response = dict()
     for e in data:
         method = e.get("method", "GET")
@@ -196,7 +205,7 @@ def proxy():
         url = e.get("url", None)
         if url:
             try:
-                r = requests.request(method=method.upper(), url=url, data=payload, timeout=5)
+                r = requests.request(method=method.upper(), url=url, data=payload, timeout=5, proxies=proxies)
                 response[url] = {
                     "status": "ok",
                     "status_code": r.status_code,

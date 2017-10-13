@@ -53,7 +53,7 @@ To override the default settings:
     * _returns_: a JSON with the requested string as `replay` (except for the `HEAD` method) and method.
 * `POST /proxy`
     * _payload_: a JSON with a list of `url` (mandatory), `method` (optional) and `payload` (optional) to proxy.
-    * _returns_: `400` if the request if malformed or a JSON with the a response for every request. If successful, the response contains `status: ok`, the `status_code` and the `headers`. If unsuccessful, the response contains `status: error` and the `reason`.
+    * _returns_: `400` if the request if malformed or a JSON with the a response for every request. If successful, the response contains `status: ok`, the `status_code` and the `headers`. If unsuccessful, the response contains `status: error` and the `reason`. If the environment variable `http_proxy` is set, `infrabin` will make the request through the proxy.
 * `GET /delay/<sec>`
     * _returns_: `200` after `min(<sec>, <MAX_DELAY>)` seconds.
 * `GET /status/<status_code>`
