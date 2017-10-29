@@ -64,6 +64,8 @@ To override the default settings:
     * _returns_: `204` on success, setting the maximum number of retries for the `/retry` endpoint to `<retries>`.
 * `GET /retry/max_retries`
     * _returns_: the current value for the maximum number of retries.
+* `GET /bytes/<n>`
+    * _returns_: `200` on success and `min(n, 1Mb)` binary payload.
 
 ## Examples
 * `POST /status`

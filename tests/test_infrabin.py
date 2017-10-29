@@ -299,3 +299,10 @@ def test_retry_status(client):
     data = json.loads(response.data.decode("utf-8"))
     assert response.status_code == 200
     assert data["max_retries"] == 2
+
+
+def test_bytes(client):
+    size = 15
+    response = client.get("/bytes/{}".format(size))
+    assert response.status_code == 200
+    assert response.headers["Content-Length"] == str(size)

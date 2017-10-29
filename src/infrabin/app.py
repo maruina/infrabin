@@ -6,7 +6,8 @@ import netifaces
 import dns.resolver
 import time
 import socket
-from flask import Flask, jsonify, request
+from random import randint
+from flask import Flask, jsonify, request, make_response
 from flask_caching import Cache
 from infrabin.helpers import status_code, gzipped
 
@@ -259,3 +260,13 @@ def retry(max_ret=None):
 def max_retries_status():
     global max_retries
     return jsonify({"max_retries": max_retries}), 200
+
+
+@app.route("/bytes/<int:n>")
+def bytes(n):
+    n = min(n, 1024 * 1024)  # Max 1Mb
+    response = make_response()
+    response.data = bytearray(randint(0, 255) for i in range(n))
+    response.content_type = 'application/octet-stream'
+    response.status_code = 200
+    return response
