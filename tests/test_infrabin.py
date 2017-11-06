@@ -7,8 +7,9 @@ import gzip
 import time
 import pytest
 import socket
+import infrabin.app
+
 from io import BytesIO
-from infrabin.app import ALL_METHODS
 
 
 @contextlib.contextmanager
@@ -28,7 +29,7 @@ def _setenv(key, value):
         os.environ[key] = value
 
 
-@pytest.fixture(params=ALL_METHODS)
+@pytest.fixture(params=infrabin.app.ALL_METHODS)
 def method(request):
     return request.param
 
@@ -256,12 +257,12 @@ def test_delay(client):
 
 
 def test_delay_max(client):
-    with _setenv("MAX_DELAY", "2"):
-        start = time.time()
-        response = client.get("/delay/10")
-        end = time.time()
-        assert int(end - start) == 2
-        assert response.status_code == 200
+    infrabin.app.max_delay = 2
+    start = time.time()
+    response = client.get("/delay/3")
+    end = time.time()
+    assert int(end - start) == 2
+    assert response.status_code == 200
 
 
 def test_status(client):
@@ -282,8 +283,7 @@ def test_retry(client):
 
 
 def test_retry_custom(client):
-    post = client.post("/retry/2")
-    assert post.status_code == 204
+    infrabin.app.max_retries = 2
     response = client.get("/retry")
     assert response.status_code == 503
     response = client.get("/retry")
@@ -291,10 +291,13 @@ def test_retry_custom(client):
     response = client.get("/retry")
     assert response.status_code == 200
 
+    infrabin.app.max_retries = 0
+    response = client.get("/retry")
+    assert response.status_code == 200
+
 
 def test_retry_status(client):
-    post = client.post("/retry/2")
-    assert post.status_code == 204
+    infrabin.app.max_retries = 2
     response = client.get("/retry/max_retries")
     data = json.loads(response.data.decode("utf-8"))
     assert response.status_code == 200
@@ -306,3 +309,11 @@ def test_bytes(client):
     response = client.get("/bytes/{}".format(size))
     assert response.status_code == 200
     assert response.headers["Content-Length"] == str(size)
+
+
+def test_bytes_max(client):
+    infrabin.app.max_size = 64
+    size = 128
+    response = client.get("/bytes/{}".format(size))
+    assert response.status_code == 200
+    assert response.headers["Content-Length"] == str(infrabin.app.max_size)
