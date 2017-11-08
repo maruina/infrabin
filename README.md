@@ -14,6 +14,8 @@ To override the default settings:
 * `-e PORT=<PORT>` to change `infrabin` listening port. Default to 8080.
 * `-e THREADS=<THREADS>` to change `waitress` threads number. Default to 16.
 * `-e MAX_DELAY=<MAX_DELAY>` to change the maximum value for the `/delay` endpoint. Default to 120.
+* `-e MAX_RETRIES=<MAX_RETRIES>` to change the maximum value for the `/retry` endpoint. Default to 3.
+* `-e MAX_SIZE=<MAX_SIZE>` to change the maximum value for the `/bytes` endpoint. Default to 1024 * 1024 Kb (1 Mb).
 
 # Endpoints
 * `GET /`
@@ -59,13 +61,11 @@ To override the default settings:
 * `GET /status/<status_code>`
     * _returns_: the requested `status_code`.
 * `GET /retry`
-    * _returns_: `503` for 3 times or `max_retries`, then one `200`.
-* `POST /retry/<retries>`
-    * _returns_: `204` on success, setting the maximum number of retries for the `/retry` endpoint to `<retries>`.
+    * _returns_: `503` for `<MAX_RETRIES>` times, then one `200`.
 * `GET /retry/max_retries`
     * _returns_: the current value for the maximum number of retries.
 * `GET /bytes/<n>`
-    * _returns_: `200` on success and `min(n, 1Mb)` binary payload.
+    * _returns_: `200` on success and `min(n, <MAX_SIZE>)` binary payload.
 
 ## Examples
 * `POST /status`

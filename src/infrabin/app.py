@@ -15,12 +15,14 @@ from infrabin.helpers import status_code, gzipped
 app = Flask(__name__)
 cache = Cache(app, config={"CACHE_TYPE": "simple"})
 
+AWS_METADATA_ENDPOINT = "http://169.254.169.254/latest/meta-data/"
+ALL_METHODS = ["GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH"]
 liveness_healthy = True
 readiness_healthy = True
 retries = 0
-max_retries = 3
-AWS_METADATA_ENDPOINT = "http://169.254.169.254/latest/meta-data/"
-ALL_METHODS = ["GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH"]
+max_retries = int(os.getenv("MAX_RETRIES", 3))
+max_delay = int(os.getenv("MAX_DELAY", 120))
+max_size = int(os.getenv("MAX_SIZE", 1024 * 1024))  # Max 1Mb
 
 
 @app.route("/")
@@ -206,7 +208,12 @@ def proxy():
         url = e.get("url", None)
         if url:
             try:
-                r = requests.request(method=method.upper(), url=url, data=payload, timeout=5, proxies=proxies)
+                r = requests.request(
+                        method=method.upper(),
+                        url=url,
+                        data=payload,
+                        timeout=5,
+                        proxies=proxies)
                 response[url] = {
                     "status": "ok",
                     "status_code": r.status_code,
@@ -227,7 +234,7 @@ def proxy():
 
 @app.route("/delay/<int:sec>")
 def delay(sec):
-    max_delay = int(os.getenv("MAX_DELAY", 120))
+    global max_delay
     time.sleep(min(sec, max_delay))
     return status_code(200)
 
@@ -238,15 +245,9 @@ def status(code):
 
 
 @app.route("/retry")
-@app.route("/retry/<int:max_ret>", methods=["POST"])
-def retry(max_ret=None):
+def retry():
     global retries
     global max_retries
-
-    if max_ret:
-        print(max_ret)
-        max_retries = max_ret
-        return status_code(204)
 
     if retries < max_retries:
         retries += 1
@@ -264,7 +265,9 @@ def max_retries_status():
 
 @app.route("/bytes/<int:n>")
 def bytes(n):
-    n = min(n, 1024 * 1024)  # Max 1Mb
+    global max_size
+
+    n = min(n, max_size)
     response = make_response()
     response.data = bytearray(randint(0, 255) for i in range(n))
     response.content_type = 'application/octet-stream'
