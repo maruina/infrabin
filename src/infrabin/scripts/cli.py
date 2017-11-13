@@ -26,4 +26,4 @@ def infrabin():
 @click.option("-t", "--threads", default=10)
 def serve(host, port, threads):
     root.info("STARTING")
-    waitress.serve(app, threads=threads, host=host, port=port)
+    waitress.serve(app, threads=threads, host=host, port=port, channel_timeout=30)
