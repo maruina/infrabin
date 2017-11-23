@@ -11,10 +11,11 @@ script:
 after_success:
 - coveralls
 - VERSION=$(cat version.txt)
-- echo "Version $VERSION"
-- if [ "$TRAVIS_BRANCH" == "master" ]; then echo "Building $TRAVIS_BRANCH image from
-  commit $COMMIT"; docker login -u $DOCKER_USER -p $DOCKER_PASS; docker build -f Dockerfile
-  -t $TRAVIS_REPO_SLUG:latest .; docker push $TRAVIS_REPO_SLUG; fi
+- echo "Building $TRAVIS_BRANCH image from
+  commit $COMMIT"
+- docker build -f Dockerfile -t $TRAVIS_REPO_SLUG:latest .
+- docker tag $TRAVIS_REPO_SLUG:latest $TRAVIS_REPO_SLUG:$VERSION
+- if [ "$TRAVIS_BRANCH" == "master" ]; then docker login -u $DOCKER_USER -p $DOCKER_PASS; ; docker push $TRAVIS_REPO_SLUG; fi
 env:
   global:
   - COMMIT=${TRAVIS_COMMIT::8}
