@@ -263,7 +263,7 @@ def max_retries_status():
     return jsonify({"max_retries": max_retries}), 200
 
 
-@app.route("/bytes/<int:n>")
+@app.route("/bytes/<int:n>", methods=["GET", "POST"])
 def bytes(n):
     global max_size
 
