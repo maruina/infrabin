@@ -122,7 +122,7 @@ def test_headers(client):
     assert data["method"] == "GET"
     assert data["origin"] == "127.0.0.1"
     assert data["headers"]["X-Meaning-Of-Life"] == "42"
-    assert data["headers"]["User-Agent"] == "werkzeug/0.12.2"
+    assert data["headers"]["User-Agent"] == "werkzeug/0.13"
     assert data["headers"]["Host"] == "localhost"
 
 
