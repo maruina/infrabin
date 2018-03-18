@@ -132,13 +132,12 @@ def test_aws_endpoint_missing(mocker, client):
 
 
 def test_aws_endpoint_not_available(mocker, client):
-    # Test failing on the assert
-    # assert 200 == 502
     requests_mock = mocker.patch("infrabin.app.requests.get")
     requests_mock.side_effect = requests.exceptions.RequestException()
 
-    response = client.get("/aws/ami-id")
+    response = client.get("/aws/anything")
     data = json.loads(response.data.decode("utf-8"))
+    assert requests_mock.called
     assert response.status_code == 502
 
 
