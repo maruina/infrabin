@@ -135,8 +135,9 @@ def test_aws_endpoint_not_available(mocker, client):
     requests_mock = mocker.patch("infrabin.app.requests.get")
     requests_mock.side_effect = requests.exceptions.RequestException()
 
+    # Use `/aws/anything` to avoid the cached result for `/aws/ami-id`
+    # Should investigate how to disable the cache
     response = client.get("/aws/anything")
-    data = json.loads(response.data.decode("utf-8"))
     assert requests_mock.called
     assert response.status_code == 502
 
