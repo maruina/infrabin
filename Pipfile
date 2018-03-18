@@ -1,0 +1,20 @@
+[[source]]
+
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+
+[packages]
+
+"e1839a8" = {path = ".", editable = true}
+pytest-mock = "*"
+
+
+[dev-packages]
+
+
+
+[requires]
+
+python_version = "3.6"

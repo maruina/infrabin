@@ -1,11 +1,28 @@
-"""A setuptools based setup module.
+import os# Always prefer setuptools over distutils
 
-See:
-https://packaging.python.org/en/latest/distributing.html
-https://github.com/pypa/sampleproject
-"""
-# Always prefer setuptools over distutils
 from setuptools import setup, find_packages
+
+
+install_requires=[
+    'Flask',
+    'requests',
+    'Flask-Caching',
+    'waitress',
+    'netifaces',
+    'dnspython',
+    'decorator',
+    'six'
+]
+
+dev_requires = [
+    'pytest',
+    'pytest-flask',
+    'tox',
+    'pytest-mock',
+    'flake8',
+    'pytest-cov',
+    'coverage'
+]
 
 setup(
     name='infrabin',
@@ -13,7 +30,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.0.4',
+    version='0.5.1',
 
     description='Like httpbin, but for infrastructure',
 
@@ -57,10 +74,9 @@ setup(
     # simple. Or you can use find_packages().
     packages=find_packages("src", exclude=['contrib', 'docs', 'tests']),
     package_dir={'': 'src'},
-    install_requires=['Flask', 'requests', 'Flask-Caching', 'waitress',
-                      'netifaces', 'dnspython', 'decorator', 'six'],
+    install_requires=install_requires,
     setup_requires=['pytest-runner'],
-    tests_requires=['pytest', 'pytest-flask', 'tox'],
+    tests_requires=dev_requires,
     entry_points='''
          [console_scripts]
          infrabin=infrabin.scripts.cli:infrabin
