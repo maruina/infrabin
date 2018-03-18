@@ -139,32 +139,29 @@ curl -d '[{"url":"https://www.google.com"},{"url":"http://httpbin.org/post","met
 }
 ```
 
-## Development and Testing
+## Development and Testing on OSX
 
 Clone the repository and create a local Python 3 virtual environment
 
 ```bash
+brew install pipenv
 git clone git@github.com:maruina/infrabin.git
 cd infrabin
-virtualenv --no-site-packages --python=python3 env
-source env/bin/activate
-# Install dependencies
-pip install .
+make install-dev
 ```
 
 Run `infrabin` locally
 
 ```bash
-export FLASK_APP=src/infrabin/app.py
-export FLASK_DEBUG=1
-flask run
+pipenv shell
+make run
 ```
 
 Run the tests
 
 ```bash
-pip install pytest pytest-flask tox
-tox
+pipenv shell
+make test
 ```
 
 ## Inspired by

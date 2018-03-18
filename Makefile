@@ -1,16 +1,19 @@
+export FLASK_APP=src/infrabin/app.py
+export FLASK_DEBUG=1
+
 clean:
 	./clean.sh
 
 install-dev:
-	pip install -e ".[dev]"
+	pipenv install -e .
 
 lint:
 	flake8 src/ tests/
 
 unittest: clean
-	pytest tests -v
+	pytest -v tests
 
 test: lint unittest
 
-
-.PHONY: install-dev lint test
+run:
+	flask run
