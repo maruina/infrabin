@@ -123,8 +123,11 @@ def env(env_var):
 def aws(metadata_category):
     try:
         r = requests.get(AWS_METADATA_ENDPOINT + metadata_category, timeout=3)
-    except requests.exceptions.ConnectionError:
-        return jsonify({"message": "aws metadata endpoint not available"}), 502
+    except requests.exceptions.RequestException as e:
+        return jsonify({
+            "message": "aws metadata endpoint not available",
+            "reason": e.__class__.__name__
+        }), 502
     if r.status_code == 404:
         return status_code(404)
     return jsonify({metadata_category: r.text})

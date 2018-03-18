@@ -7,7 +7,7 @@ import gzip
 import time
 import pytest
 import socket
-# import requests
+import requests
 import infrabin.app
 
 from io import BytesIO
@@ -134,14 +134,12 @@ def test_aws_endpoint_missing(mocker, client):
 def test_aws_endpoint_not_available(mocker, client):
     # Test failing on the assert
     # assert 200 == 502
-    # requests_mock = mocker.patch("infrabin.app.requests.get")
-    # requests_mock.side_effect = requests.exceptions.ConnectionError()
+    requests_mock = mocker.patch("infrabin.app.requests.get")
+    requests_mock.side_effect = requests.exceptions.RequestException()
 
-    # response = client.get("/aws/ami-id")
-    # data = json.loads(response.data.decode("utf-8"))
-    # assert response.status_code == 502
-    # assert data == {"message": "aws metadata endpoint not available"}
-    pass
+    response = client.get("/aws/ami-id")
+    data = json.loads(response.data.decode("utf-8"))
+    assert response.status_code == 502
 
 
 def test_headers(client):
