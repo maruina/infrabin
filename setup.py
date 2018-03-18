@@ -21,7 +21,7 @@ dev_requires = [
     'pytest-mock',
     'flake8',
     'pytest-cov',
-    'coverage'
+    'coveralls'
 ]
 
 setup(
