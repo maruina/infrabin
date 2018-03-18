@@ -7,6 +7,7 @@ import gzip
 import time
 import pytest
 import socket
+import requests
 import infrabin.app
 
 from io import BytesIO
@@ -110,9 +111,35 @@ def test_env_if_missing(client):
     assert response.status_code == 404
 
 
-def test_aws(client):
-    # TODO: find a good way to test this function
-    pass
+def test_aws_endpoint(mocker, client):
+    requests_mock = mocker.patch("infrabin.app.requests.get")
+    requests_mock.return_value.status_code = 200
+    requests_mock.return_value.text = "ami-12345"
+
+    response = client.get("/aws/ami-id")
+    data = json.loads(response.data.decode("utf-8"))
+    assert requests_mock.called
+    assert data == {"ami-id": "ami-12345"}
+
+
+def test_aws_endpoint_missing(mocker, client):
+    requests_mock = mocker.patch("infrabin.app.requests.get")
+    requests_mock.return_value.status_code = 404
+
+    response = client.get("/aws/not-exists")
+    assert requests_mock.called
+    assert response.status_code == 404
+
+
+def test_aws_endpoint_not_available(mocker, client):
+    requests_mock = mocker.patch("infrabin.app.requests.get")
+    requests_mock.side_effect = requests.exceptions.RequestException()
+
+    # Use `/aws/anything` to avoid the cached result for `/aws/ami-id`
+    # Should investigate how to disable the cache
+    response = client.get("/aws/anything")
+    assert requests_mock.called
+    assert response.status_code == 502
 
 
 def test_headers(client):
@@ -122,7 +149,6 @@ def test_headers(client):
     assert data["method"] == "GET"
     assert data["origin"] == "127.0.0.1"
     assert data["headers"]["X-Meaning-Of-Life"] == "42"
-    assert data["headers"]["User-Agent"] == "werkzeug/0.13"
     assert data["headers"]["Host"] == "localhost"
 
 
@@ -155,9 +181,11 @@ def test_connectivity_custom(client):
         "query": "facebook.com",
         "egress_url": "https://www.facebook.com"
     }
-    response = client.post("/connectivity",
-                           data=json.dumps(payload),
-                           content_type='application/json')
+    response = client.post(
+        "/connectivity",
+        data=json.dumps(payload),
+        content_type='application/json'
+    )
     data = json.loads(response.data.decode("utf-8"))
     assert response.status_code == 200
     assert data["dns"]["status"] == "ok"
@@ -206,7 +234,11 @@ def test_proxy(client):
             }
         }
     ]
-    response = client.post("/proxy", data=json.dumps(payload), content_type='application/json')
+    response = client.post(
+        "/proxy",
+        data=json.dumps(payload),
+        content_type='application/json'
+    )
     data = json.loads(response.data.decode("utf-8"))
     assert response.status_code == 200
     assert data["https://www.google.com"]["status"] == "ok"
@@ -219,7 +251,11 @@ def test_proxy_bad_url(client):
             "url": "www.google.com"
         }
     ]
-    r1 = client.post("/proxy", data=json.dumps(p1), content_type='application/json')
+    r1 = client.post(
+        "/proxy",
+        data=json.dumps(p1),
+        content_type='application/json'
+    )
     d1 = json.loads(r1.data.decode("utf-8"))
     assert d1["www.google.com"]["status"] == "error"
     assert d1["www.google.com"]["reason"] == "MissingSchema"

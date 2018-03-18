@@ -1,5 +1,5 @@
 - repo: git://github.com/pre-commit/pre-commit-hooks
-  sha: v0.9.2
+  sha: v1.2.3
   hooks:
     - id: trailing-whitespace
     - id: check-yaml
@@ -8,5 +8,5 @@
     - id: detect-private-key
     - id: end-of-file-fixer
     - id: flake8
-      args: [--max-line-length=100, infrabin, tests]
+      args: [--max-line-length=100, infrabin, tests, setup.py]
     - id: sort-simple-yaml
