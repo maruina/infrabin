@@ -118,16 +118,16 @@ def env(env_var):
         return jsonify({env_var: value})
 
 
-@app.route("/aws/<path:metadata_categories>")
+@app.route("/aws/<path:metadata_category>")
 @cache.memoize(timeout=60)
-def aws(metadata_categories):
+def aws(metadata_category):
     try:
-        r = requests.get(AWS_METADATA_ENDPOINT + metadata_categories, timeout=3)
+        r = requests.get(AWS_METADATA_ENDPOINT + metadata_category, timeout=3)
     except requests.exceptions.ConnectionError:
-        return jsonify({"message": "aws metadata endpoint not available"}), 501
+        return jsonify({"message": "aws metadata endpoint not available"}), 502
     if r.status_code == 404:
         return status_code(404)
-    return jsonify({metadata_categories: r.text})
+    return jsonify({metadata_category: r.text})
 
 
 @app.route("/connectivity", methods=["GET", "POST"])
