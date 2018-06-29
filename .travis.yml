@@ -11,8 +11,7 @@ script:
 after_success:
 - coveralls
 - VERSION=$(cat version.txt)
-- echo "Building $TRAVIS_BRANCH image from
-  commit $COMMIT"
+- echo "Building $TRAVIS_BRANCH image from commit $COMMIT"
 - docker build -f Dockerfile -t $TRAVIS_REPO_SLUG:latest -t $TRAVIS_REPO_SLUG:$VERSION .
 - if [ "$TRAVIS_BRANCH" == "master" ]; then docker login -u $DOCKER_USER -p $DOCKER_PASS; docker push $TRAVIS_REPO_SLUG; fi
 env:
