@@ -12,8 +12,10 @@ after_success:
 - coveralls
 - VERSION=$(cat version.txt)
 - echo "Building $TRAVIS_BRANCH image from commit $COMMIT"
-- docker build -f Dockerfile -t $TRAVIS_REPO_SLUG:latest -t $TRAVIS_REPO_SLUG:$VERSION .
-- if [ "$TRAVIS_BRANCH" == "master" ]; then docker login -u $DOCKER_USER -p $DOCKER_PASS; docker push $TRAVIS_REPO_SLUG; fi
+- TAG=$(if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi)
+- docker build -f Dockerfile -t $TRAVIS_REPO_SLUG:$TAG -t $TRAVIS_REPO_SLUG:$VERSION .
+- docker login -u $DOCKER_USER -p $DOCKER_PASS
+- docker push $TRAVIS_REPO_SLUG
 env:
   global:
   - COMMIT=${TRAVIS_COMMIT::8}
