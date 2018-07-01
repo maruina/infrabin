@@ -74,6 +74,8 @@ To override the default settings:
   * _returns_: `200` on success and `min(n, <MAX_SIZE>)` binary payload.
 * `GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH /mirror`
   * _returns_: a response with the same request headers and data sent to `infrabin`.
+* `GET /fibonacci/<n>`
+  * _returns_: a JSON with the _nth_ Fibonacci number.
 
 ## Examples
 
@@ -139,6 +141,15 @@ curl -d '[{"url":"https://www.google.com"},{"url":"http://httpbin.org/post","met
     "status": "ok",
     "status_code": 200
   }
+}
+```
+
+* `GET /fibonacci/10`
+
+```bash
+curl localhost:8080/fibonacci/10
+{
+    "response": 55
 }
 ```
 

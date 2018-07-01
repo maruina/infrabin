@@ -368,3 +368,10 @@ def test_mirror_json(client, method):
     if method is not "HEAD":
         data = json.loads(response.data.decode("utf-8"))
         assert data == payload
+
+
+def test_fibonacci(client):
+    response = client.get("/fibonacci/6")
+    data = json.loads(response.data.decode("utf-8"))
+    assert response.status_code == 200
+    assert data["response"] == 8
