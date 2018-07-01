@@ -175,16 +175,12 @@ def test_connectivity(client):
 def test_connectivity_custom(client):
     # TODO: fix test mocking opendns and facebook.com to remove external dependencies
     payload = {
-        "nameservers": [
-            "208.67.222.222"
-        ],
+        "nameservers": ["208.67.222.222"],
         "query": "facebook.com",
-        "egress_url": "https://www.facebook.com"
+        "egress_url": "https://www.facebook.com",
     }
     response = client.post(
-        "/connectivity",
-        data=json.dumps(payload),
-        content_type='application/json'
+        "/connectivity", data=json.dumps(payload), content_type="application/json"
     )
     data = json.loads(response.data.decode("utf-8"))
     assert response.status_code == 200
@@ -195,7 +191,7 @@ def test_connectivity_custom(client):
 def test_gzip(client):
     response = client.get("/gzip")
     buffer = BytesIO(response.data)
-    encoded_message = gzip.GzipFile(mode='rb', fileobj=buffer).read()
+    encoded_message = gzip.GzipFile(mode="rb", fileobj=buffer).read()
     data = json.loads(encoded_message.decode("utf-8"))
     assert response.status_code == 200
     assert response.headers["Content-Encoding"] == "gzip"
@@ -221,21 +217,11 @@ def test_replay_anything(client, method):
 
 def test_proxy(client):
     payload = [
-        {
-            "url": "https://www.google.com"
-        },
-        {
-            "url": "http://httpbin.org/post",
-            "method": "POST",
-            "payload": {
-                "key": "42"
-            }
-        }
+        {"url": "https://www.google.com"},
+        {"url": "http://httpbin.org/post", "method": "POST", "payload": {"key": "42"}},
     ]
     response = client.post(
-        "/proxy",
-        data=json.dumps(payload),
-        content_type='application/json'
+        "/proxy", data=json.dumps(payload), content_type="application/json"
     )
     data = json.loads(response.data.decode("utf-8"))
     assert response.status_code == 200
@@ -244,39 +230,23 @@ def test_proxy(client):
 
 
 def test_proxy_bad_url(client):
-    p1 = [
-        {
-            "url": "www.google.com"
-        }
-    ]
-    r1 = client.post(
-        "/proxy",
-        data=json.dumps(p1),
-        content_type='application/json'
-    )
+    p1 = [{"url": "www.google.com"}]
+    r1 = client.post("/proxy", data=json.dumps(p1), content_type="application/json")
     d1 = json.loads(r1.data.decode("utf-8"))
     assert d1["www.google.com"]["status"] == "error"
     assert d1["www.google.com"]["reason"] == "MissingSchema"
-    p2 = [
-        {
-            "url": "https://www.ggooggllee.comm"
-        }
-    ]
-    r2 = client.post("/proxy", data=json.dumps(p2), content_type='application/json')
+    p2 = [{"url": "https://www.ggooggllee.comm"}]
+    r2 = client.post("/proxy", data=json.dumps(p2), content_type="application/json")
     d2 = json.loads(r2.data.decode("utf-8"))
     assert d2["https://www.ggooggllee.comm"]["status"] == "error"
 
 
 def test_proxy_bad_request(client):
-    p1 = {
-        "key1": "value1"
-    }
-    r1 = client.post("/proxy", data=json.dumps(p1), content_type='application/json')
+    p1 = {"key1": "value1"}
+    r1 = client.post("/proxy", data=json.dumps(p1), content_type="application/json")
     assert r1.status_code == 400
-    p2 = [
-        {}
-    ]
-    r2 = client.post("/proxy", data=json.dumps(p2), content_type='application/json')
+    p2 = [{}]
+    r2 = client.post("/proxy", data=json.dumps(p2), content_type="application/json")
     data = json.loads(r2.data.decode("utf-8"))
     assert r2.status_code == 400
     assert data == {"message": "url missing"}
@@ -354,14 +324,12 @@ def test_bytes_max(client):
 
 
 def test_mirror_json(client, method):
-    payload = {
-        "key": "value"
-    }
+    payload = {"key": "value"}
     response = client.open(
         path="/mirror",
         method=method,
         data=json.dumps(payload),
-        content_type="application/json"
+        content_type="application/json",
     )
     assert response.status_code == 200
     assert response.headers["Content-Type"] == "application/json"

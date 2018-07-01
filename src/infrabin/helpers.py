@@ -20,11 +20,7 @@ def gzipped(f, *args, **kwargs):
         content = data
 
     gzip_buffer = BytesIO()
-    gzip_file = gzip.GzipFile(
-        mode='wb',
-        compresslevel=4,
-        fileobj=gzip_buffer
-    )
+    gzip_file = gzip.GzipFile(mode="wb", compresslevel=4, fileobj=gzip_buffer)
     gzip_file.write(content)
     gzip_file.close()
 
@@ -32,8 +28,8 @@ def gzipped(f, *args, **kwargs):
 
     if isinstance(data, Response):
         data.data = gzip_data
-        data.headers['Content-Encoding'] = 'gzip'
-        data.headers['Content-Length'] = str(len(data.data))
+        data.headers["Content-Encoding"] = "gzip"
+        data.headers["Content-Length"] = str(len(data.data))
 
         return data
     return gzip_data
@@ -42,5 +38,5 @@ def gzipped(f, *args, **kwargs):
 def fib(n):
     # Inefficient implementation to force heavy CPU usage
     if n > 1:
-        return fib(n-1) + fib(n-2)
+        return fib(n - 1) + fib(n - 2)
     return n
