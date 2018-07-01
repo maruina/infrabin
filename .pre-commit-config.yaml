@@ -7,6 +7,4 @@
     - id: detect-aws-credentials
     - id: detect-private-key
     - id: end-of-file-fixer
-    - id: flake8
-      args: [--max-line-length=100, infrabin, tests, setup.py]
     - id: sort-simple-yaml
