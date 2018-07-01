@@ -198,23 +198,6 @@ def test_gzip(client):
     assert data == {"message": "this is gzip compressed"}
 
 
-def test_replay(client, method):
-    response = client.open(path="/replay", method=method)
-    assert response.status_code == 200
-    if method is not "HEAD":
-        data = json.loads(response.data.decode("utf-8"))
-        assert data["method"] == method
-
-
-def test_replay_anything(client, method):
-    response = client.open(path="/replay/meaning/of/life/42", method=method)
-    assert response.status_code == 200
-    if method is not "HEAD":
-        data = json.loads(response.data.decode("utf-8"))
-        assert data["replay"] == "meaning/of/life/42"
-        assert data["method"] == method
-
-
 def test_proxy(client):
     payload = [
         {"url": "https://www.google.com"},
