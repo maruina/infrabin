@@ -18,7 +18,17 @@ cache = Cache(app, config={"CACHE_TYPE": "simple"})
 
 
 AWS_METADATA_ENDPOINT = "http://169.254.169.254/latest/meta-data/"
-ALL_METHODS = ["GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH"]
+ALL_METHODS = [
+    "GET",
+    "HEAD",
+    "POST",
+    "PUT",
+    "DELETE",
+    "CONNECT",
+    "OPTIONS",
+    "TRACE",
+    "PATCH",
+]
 liveness_healthy = True
 readiness_healthy = True
 retries = 0
@@ -52,7 +62,10 @@ def network(interface=None):
             netifaces.ifaddresses(interface)
             interfaces = [interface]
         except ValueError:
-            return jsonify({"message": "interface {} not available".format(interface)}), 404
+            return (
+                jsonify({"message": "interface {} not available".format(interface)}),
+                404,
+            )
     else:
         interfaces = netifaces.interfaces()
 
@@ -126,10 +139,15 @@ def aws(metadata_category):
     try:
         r = requests.get(AWS_METADATA_ENDPOINT + metadata_category, timeout=3)
     except requests.exceptions.RequestException as e:
-        return jsonify({
-            "message": "aws metadata endpoint not available",
-            "reason": e.__class__.__name__
-        }), 502
+        return (
+            jsonify(
+                {
+                    "message": "aws metadata endpoint not available",
+                    "reason": e.__class__.__name__,
+                }
+            ),
+            502,
+        )
     if r.status_code == 404:
         return status_code(404)
     return jsonify({metadata_category: r.text})
@@ -148,44 +166,30 @@ def connectivity():
     resolver.nameservers = nameservers
     try:
         resolver.query(query)
-        response["dns"] = {
-            "status": "ok"
-        }
+        response["dns"] = {"status": "ok"}
     except dns.exception.DNSException as e:
-        response["dns"] = {
-            "status": "error",
-            "reason": e.__class__.__name__
-        }
+        response["dns"] = {"status": "error", "reason": e.__class__.__name__}
     # Test external connectivity
     egress_url = data.get("egress_url", "https://www.google.com")
     try:
         requests.get(egress_url, timeout=3)
-        response["egress"] = {
-            "status": "ok"
-        }
+        response["egress"] = {"status": "ok"}
     except requests.exceptions.RequestException as e:
-        response["egress"] = {
-            "status": "error",
-            "reason": e.__class__.__name__
-        }
+        response["egress"] = {"status": "error", "reason": e.__class__.__name__}
     return jsonify(response)
 
 
 @app.route("/gzip")
 @gzipped
 def gzip():
-    response = {
-        "message": "this is gzip compressed"
-    }
+    response = {"message": "this is gzip compressed"}
     return jsonify(response)
 
 
 @app.route("/replay", methods=ALL_METHODS)
 @app.route("/replay/<path:anything>", methods=ALL_METHODS)
 def replay(anything=None):
-    response = {
-        "method": request.method
-    }
+    response = {"method": request.method}
     if anything:
         response["replay"] = anything
     return jsonify(response)
@@ -201,7 +205,7 @@ def proxy():
     if http_proxy:
         proxies = {
             "http": "http://{}".format(http_proxy),
-            "https": "http://{}".format(http_proxy)
+            "https": "http://{}".format(http_proxy),
         }
     else:
         proxies = None
@@ -214,23 +218,24 @@ def proxy():
         if url:
             try:
                 r = requests.request(
-                        method=method.upper(),
-                        url=url,
-                        data=payload,
-                        timeout=5,
-                        proxies=proxies)
+                    method=method.upper(),
+                    url=url,
+                    data=payload,
+                    timeout=5,
+                    proxies=proxies,
+                )
                 response[url] = {
                     "status": "ok",
                     "status_code": r.status_code,
                     # r.headers is of type requests.structures.CaseInsensitiveDict
                     # We want to convert it to a dictionary to return it into the response
-                    "headers": dict(**r.headers)
+                    "headers": dict(**r.headers),
                 }
             except requests.exceptions.RequestException as e:
                 response[url] = {
                     "status": "error",
                     # Print the class exception name that should be self explanatory
-                    "reason": e.__class__.__name__
+                    "reason": e.__class__.__name__,
                 }
         else:
             return jsonify({"message": "url missing"}), 400
@@ -275,7 +280,7 @@ def bytes(n):
     n = min(n, max_size)
     response = make_response()
     response.data = bytearray(randint(0, 255) for i in range(n))
-    response.content_type = 'application/octet-stream'
+    response.content_type = "application/octet-stream"
     response.status_code = 200
     return response
 
@@ -291,9 +296,7 @@ def mirror():
 @app.route("/fibonacci/<int:n>", methods=["GET"])
 def fibonacci(n):
     result = fib(n)
-    response = {
-        "response": result
-    }
+    response = {"response": result}
     return jsonify(response)
 
 

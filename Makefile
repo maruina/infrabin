@@ -8,6 +8,7 @@ install-dev:
 	pipenv install -e .
 
 lint:
+	black src/ tests/
 	flake8 src/ tests/
 
 unittest: clean
