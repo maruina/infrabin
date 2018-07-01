@@ -186,15 +186,6 @@ def gzip():
     return jsonify(response)
 
 
-@app.route("/replay", methods=ALL_METHODS)
-@app.route("/replay/<path:anything>", methods=ALL_METHODS)
-def replay(anything=None):
-    response = {"method": request.method}
-    if anything:
-        response["replay"] = anything
-    return jsonify(response)
-
-
 @app.route("/proxy", methods=["POST"])
 def proxy():
     data = request.get_json()
