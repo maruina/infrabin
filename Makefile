@@ -16,4 +16,4 @@ unittest: clean
 test: lint unittest
 
 run:
-	flask run
+	python3 src/infrabin/app.py

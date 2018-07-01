@@ -10,7 +10,7 @@ import logging
 from random import randint
 from flask import Flask, jsonify, request, make_response
 from flask_caching import Cache
-from infrabin.helpers import status_code, gzipped
+from infrabin.helpers import status_code, gzipped, fib
 
 
 app = Flask(__name__)
@@ -286,6 +286,15 @@ def mirror():
     response.data = request.get_data()
     response.headers = request.headers
     return response
+
+
+@app.route("/fibonacci/<int:n>", methods=["GET"])
+def fibonacci(n):
+    result = fib(n)
+    response = {
+        "response": result
+    }
+    return jsonify(response)
 
 
 # Testing if run directly, or not (because of gunicorn)

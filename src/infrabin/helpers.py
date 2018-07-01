@@ -37,3 +37,10 @@ def gzipped(f, *args, **kwargs):
 
         return data
     return gzip_data
+
+
+def fib(n):
+    # Inefficient implementation to force heavy CPU usage
+    if n > 1:
+        return fib(n-1) + fib(n-2)
+    return n
