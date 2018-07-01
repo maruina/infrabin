@@ -1,11 +1,8 @@
-version: "2"
+version: "3"
 
 services:
-
   infrabin:
-    ports:
-      - 8080:8080
     build:
       context: .
-    environment:
-      PORT: 8080
+    ports:
+      - 8080:8080

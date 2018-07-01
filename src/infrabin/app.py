@@ -6,6 +6,7 @@ import netifaces
 import dns.resolver
 import time
 import socket
+import logging
 from random import randint
 from flask import Flask, jsonify, request, make_response
 from flask_caching import Cache
@@ -14,6 +15,7 @@ from infrabin.helpers import status_code, gzipped
 
 app = Flask(__name__)
 cache = Cache(app, config={"CACHE_TYPE": "simple"})
+
 
 AWS_METADATA_ENDPOINT = "http://169.254.169.254/latest/meta-data/"
 ALL_METHODS = ["GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH"]
@@ -276,3 +278,13 @@ def bytes(n):
     response.content_type = 'application/octet-stream'
     response.status_code = 200
     return response
+
+
+# Testing if run directly, or not (because of gunicorn)
+if __name__ != "__main__":
+    gunicorn_logger = logging.getLogger("gunicorn.error")
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8080, debug=True)

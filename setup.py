@@ -1,13 +1,12 @@
-import os# Always prefer setuptools over distutils
-
 from setuptools import setup, find_packages
 
 
-install_requires=[
+install_requires = [
     'Flask',
     'requests',
     'Flask-Caching',
-    'waitress',
+    'gunicorn',
+    'eventlet',
     'netifaces',
     'dnspython',
     'decorator',
@@ -76,9 +75,5 @@ setup(
     package_dir={'': 'src'},
     install_requires=install_requires,
     setup_requires=['pytest-runner'],
-    tests_requires=dev_requires,
-    entry_points='''
-         [console_scripts]
-         infrabin=infrabin.scripts.cli:infrabin
-         '''
+    tests_requires=dev_requires
 )
