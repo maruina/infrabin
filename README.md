@@ -72,6 +72,8 @@ To override the default settings:
   * _returns_: the current value for the maximum number of retries.
 * `GET, POST /bytes/<n>`
   * _returns_: `200` on success and `min(n, <MAX_SIZE>)` binary payload.
+* `GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH /mirror`
+  * _returns_: a response with the same request headers and data sent to `infrabin`.
 
 ## Examples
 

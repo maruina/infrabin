@@ -280,6 +280,14 @@ def bytes(n):
     return response
 
 
+@app.route("/mirror", methods=ALL_METHODS)
+def mirror():
+    response = make_response()
+    response.data = request.get_data()
+    response.headers = request.headers
+    return response
+
+
 # Testing if run directly, or not (because of gunicorn)
 if __name__ != "__main__":
     gunicorn_logger = logging.getLogger("gunicorn.error")

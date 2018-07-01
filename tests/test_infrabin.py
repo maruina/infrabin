@@ -204,7 +204,6 @@ def test_gzip(client):
 
 def test_replay(client, method):
     response = client.open(path="/replay", method=method)
-    print("Testing method {}".format(method))
     assert response.status_code == 200
     if method is not "HEAD":
         data = json.loads(response.data.decode("utf-8"))
@@ -213,7 +212,6 @@ def test_replay(client, method):
 
 def test_replay_anything(client, method):
     response = client.open(path="/replay/meaning/of/life/42", method=method)
-    print("Testing method {}".format(method))
     assert response.status_code == 200
     if method is not "HEAD":
         data = json.loads(response.data.decode("utf-8"))
@@ -353,3 +351,20 @@ def test_bytes_max(client):
     response = client.get("/bytes/{}".format(size))
     assert response.status_code == 200
     assert response.headers["Content-Length"] == str(infrabin.app.max_size)
+
+
+def test_mirror_json(client, method):
+    payload = {
+        "key": "value"
+    }
+    response = client.open(
+        path="/mirror",
+        method=method,
+        data=json.dumps(payload),
+        content_type="application/json"
+    )
+    assert response.status_code == 200
+    assert response.headers["Content-Type"] == "application/json"
+    if method is not "HEAD":
+        data = json.loads(response.data.decode("utf-8"))
+        assert data == payload
