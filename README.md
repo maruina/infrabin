@@ -17,7 +17,7 @@ docker run -d -p 8080:8080 maruina/infrabin
 To override the default settings:
 
 * `-e PORT=<PORT>` to change `infrabin` listening port. Default to 8080.
-* `-e THREADS=<THREADS>` to change `waitress` threads number. Default to 16.
+* `-e THREADS=<THREADS>` to change `gunicorn` threads number. Default to 4.
 * `-e MAX_DELAY=<MAX_DELAY>` to change the maximum value for the `/delay` endpoint. Default to 120.
 * `-e MAX_RETRIES=<MAX_RETRIES>` to change the maximum value for the `/retry` endpoint. Default to 3.
 * `-e MAX_SIZE=<MAX_SIZE>` to change the maximum value for the `/bytes` endpoint. Default to 1024 * 1024 Kb (1 Mb).
