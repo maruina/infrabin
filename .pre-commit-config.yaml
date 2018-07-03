@@ -4,6 +4,7 @@
     - id: trailing-whitespace
     - id: check-docstring-first
     - id: check-yaml
+      args: ['--allow-multiple-documents']
     - id: check-merge-conflict
     - id: detect-aws-credentials
     - id: detect-private-key

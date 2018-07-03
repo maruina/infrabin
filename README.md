@@ -10,8 +10,36 @@
 
 ## Usage
 
+### Docker
+
 ```bash
 docker run -d -p 8080:8080 maruina/infrabin
+```
+
+### Kubernetes
+
+```bash
+kubectl apply -f k8s/infrabin.yml
+
+# Example ingress rule to be changed according the k8s configuration
+cat <<EOF | kubectl create -f -
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: infrabin
+  namespace: infrabin
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: infrabin.<DOMAIN>
+      http:
+        paths:
+        - path: /
+          backend:
+            serviceName: infrabin
+            servicePort: 8080
+EOF
 ```
 
 To override the default settings:
