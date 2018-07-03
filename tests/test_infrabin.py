@@ -35,6 +35,11 @@ def method(request):
     return request.param
 
 
+@pytest.fixture(params=infrabin.app.LOG_LEVELS)
+def log_levels(request):
+    return request.param
+
+
 def test_main(client):
     response = client.get("/")
     data = json.loads(response.data.decode("utf-8"))
@@ -326,3 +331,31 @@ def test_fibonacci(client):
     data = json.loads(response.data.decode("utf-8"))
     assert response.status_code == 200
     assert data["response"] == 8
+
+
+def test_log_bad_request(client):
+    bad_severity = {"severity": "NO_EXISTS", "message": "fail"}
+    response = client.post(
+        "/log", data=json.dumps(bad_severity), content_type="application/json"
+    )
+    assert response.status_code == 400
+
+    empty = {}
+    response = client.post(
+        "/log", data=json.dumps(empty), content_type="application/json"
+    )
+    assert response.status_code == 400
+
+    empty_message = {"message": ""}
+    response = client.post(
+        "/log", data=json.dumps(empty_message), content_type="application/json"
+    )
+    assert response.status_code == 400
+
+
+def test_log(client, log_levels):
+    payload = {"severity": log_levels, "message": "hello"}
+    response = client.post(
+        "/log", data=json.dumps(payload), content_type="application/json"
+    )
+    assert response.status_code == 200

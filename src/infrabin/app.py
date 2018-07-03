@@ -36,6 +36,7 @@ ALL_METHODS = [
     "TRACE",
     "PATCH",
 ]
+LOG_LEVELS = {"CRITICAL": 50, "ERROR": 40, "WARNING": 30, "INFO": 20, "DEBUG": 10}
 liveness_healthy = True
 readiness_healthy = True
 retries = 0
@@ -298,11 +299,16 @@ def fibonacci(n):
     return jsonify(response)
 
 
-@app.route("/log/<message:string>", methods=["POST"])
-def log(message):
-    data = request.get_json()
-    severity = data.get("severity", "WARNING")
+@app.route("/log", methods=["POST"])
+def record_log():
+    data = request.get_json() or {}
+    severity = data.get("severity", "INFO")
     message = data.get("message", "")
+    if all([data, severity, message]) and severity in LOG_LEVELS:
+        app.logger.log(LOG_LEVELS[severity], message)
+        return status_code(200)
+    else:
+        return status_code(400)
 
 
 if __name__ == "__main__":
