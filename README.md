@@ -79,12 +79,18 @@ To override the default settings:
 * `GET /connectivity`
   * _returns_: the JSON `{"dns":{"status": "ok"}, "egress": {"status": "ok"}}` if `infrabin` can resolve `google.com` using Google's DNS and can connect to `https://www.google.com`. If a test fails, `infrabin` returns `"status": "error"` and the `reason`.
 * `POST /connectivity`
-  * _payload_: a JSON with a `nameservers` list, a `query` and an `egress_url`.
+  * _arguments_ (JSON):
+    * `nameservers` (optional): a list of DNS nameserver
+    * `query` (optional): the DNS domain to resolve
+    * `egress_url` (optional): the remote url to open
   * _returns_: same as `GET /status` or `400` if the request is malformed.
 * `GET /gzip`
   * _returns_: the JSON `{"message": "this is gzip compressed"}` gzip compressed.
 * `POST /proxy`
-  * _payload_: a JSON with a list of `url` (mandatory), `method` (optional) and `payload` (optional) to proxy.
+  * _arguments_ (JSON):
+    * `url` (required): the proxy url
+    * `method` (optional): the HTTP method to use with the proxy
+    * `payload` (optional): the JSON data to pass to the proxy
   * _returns_: `400` if the request if malformed or a JSON with the a response for every request. If successful, the response contains `status: ok`, the `status_code` and the `headers`. If unsuccessful, the response contains `status: error` and the `reason`. If the environment variable `http_proxy` is set, `infrabin` will make the request through the proxy.
 * `GET /delay/<sec>`
   * _returns_: `200` after `min(<sec>, <MAX_DELAY>)` seconds.
@@ -100,6 +106,11 @@ To override the default settings:
   * _returns_: a response with the same request headers and data sent to `infrabin`.
 * `GET /fibonacci/<n>`
   * _returns_: a JSON with the _nth_ Fibonacci number.
+* `POST /log`
+  * _arguments_ (JSON):
+    * `message` (required): a string to log
+    * `severity` (optional, default to `INFO`): a [valid Python logging level](https://docs.python.org/3/library/logging.html#logging-levels)
+  * _returns_: `200` on success or `400` if the request is malformed.
 
 ## Examples
 
