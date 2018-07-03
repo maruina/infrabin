@@ -17,6 +17,13 @@ app = Flask(__name__)
 cache = Cache(app, config={"CACHE_TYPE": "simple"})
 
 
+# Logging configuration in Gunicorn
+if __name__ != "__main__":
+    gunicorn_logger = logging.getLogger("gunicorn.error")
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
+
+
 AWS_METADATA_ENDPOINT = "http://169.254.169.254/latest/meta-data/"
 ALL_METHODS = [
     "GET",
@@ -291,11 +298,12 @@ def fibonacci(n):
     return jsonify(response)
 
 
-# Testing if run directly, or not (because of gunicorn)
-if __name__ != "__main__":
-    gunicorn_logger = logging.getLogger("gunicorn.error")
-    app.logger.handlers = gunicorn_logger.handlers
-    app.logger.setLevel(gunicorn_logger.level)
+@app.route("/log/<message:string>", methods=["POST"])
+def log(message):
+    data = request.get_json()
+    severity = data.get("severity", "WARNING")
+    message = data.get("message", "")
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080, debug=True)
