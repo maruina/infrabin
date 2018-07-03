@@ -33,13 +33,13 @@ spec:
                 command: ["sleep","8"]
           livenessProbe:
             httpGet:
-              path: /liveness
+              path: /healthcheck/liveness
               port: 8080
             initialDelaySeconds: 5
             periodSeconds: 3
           readinessProbe:
             httpGet:
-              path: /readiness
+              path: /healthcheck/readiness
               port: 8080
             initialDelaySeconds: 5
             periodSeconds: 1
