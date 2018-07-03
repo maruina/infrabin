@@ -17,6 +17,13 @@ app = Flask(__name__)
 cache = Cache(app, config={"CACHE_TYPE": "simple"})
 
 
+# Logging configuration in Gunicorn
+if __name__ != "__main__":
+    gunicorn_logger = logging.getLogger("gunicorn.error")
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
+
+
 AWS_METADATA_ENDPOINT = "http://169.254.169.254/latest/meta-data/"
 ALL_METHODS = [
     "GET",
@@ -29,6 +36,7 @@ ALL_METHODS = [
     "TRACE",
     "PATCH",
 ]
+LOG_LEVELS = {"CRITICAL": 50, "ERROR": 40, "WARNING": 30, "INFO": 20, "DEBUG": 10}
 liveness_healthy = True
 readiness_healthy = True
 retries = 0
@@ -291,11 +299,17 @@ def fibonacci(n):
     return jsonify(response)
 
 
-# Testing if run directly, or not (because of gunicorn)
-if __name__ != "__main__":
-    gunicorn_logger = logging.getLogger("gunicorn.error")
-    app.logger.handlers = gunicorn_logger.handlers
-    app.logger.setLevel(gunicorn_logger.level)
+@app.route("/log", methods=["POST"])
+def record_log():
+    data = request.get_json() or {}
+    severity = data.get("severity", "INFO")
+    message = data.get("message", "")
+    if all([data, severity, message]) and severity in LOG_LEVELS:
+        app.logger.log(LOG_LEVELS[severity], message)
+        return status_code(200)
+    else:
+        return status_code(400)
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080, debug=True)

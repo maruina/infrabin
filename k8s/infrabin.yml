@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: infrabin
-          image: maruina/infrabin:0.7.0
+          image: maruina/infrabin:0.8.0
           ports:
             - containerPort: 8080
           lifecycle:
