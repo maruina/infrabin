@@ -8,8 +8,8 @@ install-dev:
 	pipenv install -e .
 
 lint:
-	black src/ tests/ setup.py
-	flake8 src/ tests/ setup.py
+	black infrabin/ tests/ setup.py
+	flake8 infrabin/ tests/ setup.py
 
 unittest: clean
 	pytest -v tests

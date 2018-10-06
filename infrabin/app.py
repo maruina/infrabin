@@ -11,10 +11,12 @@ from random import randint
 from flask import Flask, jsonify, request, make_response
 from flask_caching import Cache
 from infrabin.helpers import status_code, gzipped, fib
+from infrabin.middleware import setup_metrics
 
 
 app = Flask(__name__)
 cache = Cache(app, config={"CACHE_TYPE": "simple"})
+setup_metrics(app)
 
 
 # Logging configuration in Gunicorn

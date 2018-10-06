@@ -2,7 +2,7 @@ FROM python:3-alpine
 ENV PORT 8080
 ENV THREADS 4
 
-RUN apk add --no-cache gcc musl-dev linux-headers curl bind-tools && \
+RUN apk add --no-cache gcc musl-dev linux-headers curl bind-tools dumb-init && \
     rm -rf /var/cache/apk/*
 
 ADD . /infrabin
