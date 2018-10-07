@@ -18,9 +18,11 @@ lint:
 	flake8 --max-line-length=88 infrabin/ tests/
 
 unittest: clean
-	pipenv run py.test -v tests
+	py.test -v tests
 
-ci: lint
+ci:
+	pipenv run black infrabin/ tests/
+	pipenv run flake8 --max-line-length=88 infrabin/ tests/
 	pipenv run py.test -sv tests --cov=infrabin
 
 run:
