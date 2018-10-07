@@ -1,5 +1,5 @@
 #!/usr/bin/dumb-init /bin/sh
-set -e
+set -eu
 
 export prometheus_multiproc_dir="$(mktemp -d)"
 
