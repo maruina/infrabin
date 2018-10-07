@@ -13,7 +13,7 @@ netifaces = "*"
 prometheus-client = "*"
 requests = "*"
 six = "*"
-uwsgi = "*"
+gunicorn = "*"
 
 [dev-packages]
 black = "*"

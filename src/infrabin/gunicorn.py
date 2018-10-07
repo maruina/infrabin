@@ -9,6 +9,7 @@ bind = f"0.0.0.0:{port}"
 timeout = 180
 workers = multiprocessing.cpu_count() * 2 + 1
 worker_class = "eventlet"
+pythonpath="/infrabin/src"
 
 # check for prometheus settings
 if "prometheus_multiproc_dir" not in os.environ:

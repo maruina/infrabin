@@ -1,17 +1,16 @@
-FROM python:3-alpine
+FROM python:3.7-alpine
 ENV PORT 8080
-ENV THREADS 4
+ENV THREADS 8
 
-RUN apk add --no-cache gcc musl-dev linux-headers curl bind-tools dumb-init && \
-    rm -rf /var/cache/apk/*
+RUN apk add --no-cache gcc musl-dev linux-headers curl bind-tools
 
 ADD . /infrabin
-RUN pip install infrabin/
+WORKDIR /infrabin
+# https://github.com/pypa/pipenv/issues/2871
+RUN pip install pip==18.0 && \
+    pip install pipenv --upgrade && \
+    pipenv install --deploy --system --skip-lock
 
 EXPOSE 8080
 
-WORKDIR /infrabin/src/infrabin
-CMD exec gunicorn -w "${THREADS}" \
-    -b "0.0.0.0:${PORT}" \
-    -k eventlet \
-    app:app
+CMD exec /infrabin/run.sh prod

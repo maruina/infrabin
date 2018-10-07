@@ -112,6 +112,10 @@ To override the default settings:
     * `severity` (optional, default to `INFO`): a [valid Python logging level](https://docs.python.org/3/library/logging.html#logging-levels)
   * _returns_: `200` on success or `400` if the request is malformed.
 
+## Metrics
+
+`infrabin` exposes a Prometheus endpoint at the `/metrics` route.
+
 ## Examples
 
 * `POST /status`
