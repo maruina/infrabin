@@ -7,12 +7,12 @@ import time
 
 # Prometheus metrics
 REQUEST_COUNT = Counter(
-    'request_count',
-    'HTTP Request Count',
-    ['method', 'endpoint', 'http_status']
+    'http_requests_total',
+    'HTTP Requests Count',
+    ['method', 'endpoint', 'status_code']
 )
 REQUEST_LATENCY = Histogram(
-    'request_latency',
+    'http_request_duration_seconds',
     'HTTP Request latency',
     ['method', 'endpoint']
 )

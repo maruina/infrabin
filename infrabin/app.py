@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import os
 import requests
 import netifaces
@@ -73,7 +71,7 @@ def network(interface=None):
             interfaces = [interface]
         except ValueError:
             return (
-                jsonify({"message": "interface {} not available".format(interface)}),
+                jsonify({f"message": "interface {interface} not available"}),
                 404,
             )
     else:
@@ -205,8 +203,8 @@ def proxy():
     http_proxy = os.getenv("http_proxy", None)
     if http_proxy:
         proxies = {
-            "http": "http://{}".format(http_proxy),
-            "https": "http://{}".format(http_proxy),
+            "http": f"http://{http_proxy}",
+            "https": f"http://{http_proxy}",
         }
     else:
         proxies = None
