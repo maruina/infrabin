@@ -2,6 +2,7 @@ clean:
 	./clean.sh
 
 init:
+	pip install pip==18.0
 	pip install pipenv --upgrade
 
 install:
@@ -14,15 +15,13 @@ shell:
 	pipenv shell
 
 lint:
-	black infrabin/ tests/
-	flake8 --max-line-length=88 infrabin/ tests/
+	black src/infrabin/ tests/
+	flake8 --max-line-length=88 src/infrabin/ tests/
 
 unittest: clean
 	py.test -v tests
 
 ci:
-	pipenv run black infrabin/ tests/
-	pipenv run flake8 --max-line-length=88 infrabin/ tests/
 	pipenv run py.test -sv tests --cov=infrabin
 
 run:

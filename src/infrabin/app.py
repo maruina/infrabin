@@ -8,7 +8,12 @@ import logging
 from random import randint
 from flask import Flask, jsonify, request, make_response
 from flask_caching import Cache
-from prometheus_client import multiprocess, generate_latest, CollectorRegistry, CONTENT_TYPE_LATEST
+from prometheus_client import (
+    multiprocess,
+    generate_latest,
+    CollectorRegistry,
+    CONTENT_TYPE_LATEST,
+)
 from infrabin.helpers import status_code, gzipped, fib
 from infrabin.middleware import setup_metrics
 
@@ -314,8 +319,8 @@ def metrics():
 
     data = generate_latest(registry)
     response = make_response(data)
-    response.headers['Content-Type'] = CONTENT_TYPE_LATEST
-    response.headers['Content-Length'] = str(len(data))
+    response.headers["Content-Type"] = CONTENT_TYPE_LATEST
+    response.headers["Content-Length"] = str(len(data))
 
     return response
 
