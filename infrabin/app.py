@@ -70,10 +70,7 @@ def network(interface=None):
             netifaces.ifaddresses(interface)
             interfaces = [interface]
         except ValueError:
-            return (
-                jsonify({f"message": "interface {interface} not available"}),
-                404,
-            )
+            return (jsonify({"message": f"interface {interface} not available"}), 404)
     else:
         interfaces = netifaces.interfaces()
 
@@ -202,10 +199,7 @@ def proxy():
 
     http_proxy = os.getenv("http_proxy", None)
     if http_proxy:
-        proxies = {
-            "http": f"http://{http_proxy}",
-            "https": f"http://{http_proxy}",
-        }
+        proxies = {"http": f"http://{http_proxy}", "https": f"http://{http_proxy}"}
     else:
         proxies = None
 
@@ -227,7 +221,8 @@ def proxy():
                     "status": "ok",
                     "status_code": r.status_code,
                     # r.headers is of type requests.structures.CaseInsensitiveDict
-                    # We want to convert it to a dictionary to return it into the response
+                    # We want to convert it to a dictionary
+                    # to return it into the response
                     "headers": dict(**r.headers),
                 }
             except requests.exceptions.RequestException as e:

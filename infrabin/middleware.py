@@ -7,14 +7,10 @@ import time
 
 # Prometheus metrics
 REQUEST_COUNT = Counter(
-    'http_requests_total',
-    'HTTP Requests Count',
-    ['method', 'endpoint', 'status_code']
+    "http_requests_total", "HTTP Requests Count", ["method", "endpoint", "status_code"]
 )
 REQUEST_LATENCY = Histogram(
-    'http_request_duration_seconds',
-    'HTTP Request latency',
-    ['method', 'endpoint']
+    "http_request_duration_seconds", "HTTP Request latency", ["method", "endpoint"]
 )
 
 
@@ -34,11 +30,14 @@ def record_request_data(response):
 def check_prometheus():
     is_gunicorn = "gunicorn" in os.environ.get("SERVER_SOFTWARE", "")
 
-    if 'prometheus_multiproc_dir' in os.environ:
-        os.makedirs(os.environ['prometheus_multiproc_dir'], exist_ok=True)
+    if "prometheus_multiproc_dir" in os.environ:
+        os.makedirs(os.environ["prometheus_multiproc_dir"], exist_ok=True)
 
     elif is_gunicorn:
-        raise Exception('Please set prometheus_multiproc_dir variable using `export prometheus_multiproc_dir=$(mktemp -d)`')
+        raise Exception(
+            """Please set prometheus_multiproc_dir variable using
+            `export prometheus_multiproc_dir=$(mktemp -d)`"""
+        )
 
 
 def setup_metrics(app):

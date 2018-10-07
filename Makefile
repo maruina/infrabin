@@ -13,15 +13,15 @@ install-dev:
 shell:
 	pipenv shell
 
-lint: shell
-	black infrabin/ tests/ setup.py
-	flake8 infrabin/ tests/ setup.py
+lint:
+	black infrabin/ tests/
+	flake8 --max-line-length=88 infrabin/ tests/
 
-unittest: shell clean
+unittest: clean
 	pipenv run py.test -v tests
 
 ci: lint
 	pipenv run py.test -sv tests --cov=infrabin
 
-run: shell
+run:
 	python3 infrabin/app.py
