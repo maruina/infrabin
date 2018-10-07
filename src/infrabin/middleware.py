@@ -20,7 +20,6 @@ def start_timer():
 
 def record_request_data(response):
     resp_time = time.time() - request.start_time
-
     REQUEST_LATENCY.labels(request.method, request.path).observe(resp_time)
     REQUEST_COUNT.labels(request.method, request.path, response.status_code).inc()
 
@@ -41,8 +40,6 @@ def check_prometheus():
 
 
 def setup_metrics(app):
-
     check_prometheus()
-
     app.before_request(start_timer)
     app.after_request(record_request_data)

@@ -1,11 +1,11 @@
-export FLASK_APP=src/infrabin/app.py
-export FLASK_DEBUG=1
-
 clean:
 	./clean.sh
 
 init:
 	pip install pipenv --upgrade
+
+install:
+	pipenv install --deploy --system --skip-lock
 
 install-dev:
 	pipenv install --dev --skip-lock
@@ -24,4 +24,7 @@ ci: lint
 	pipenv run py.test -sv tests --cov=infrabin
 
 run:
-	python3 infrabin/app.py
+	./run.sh prod
+
+run-dev:
+	./run.sh dev
