@@ -22,7 +22,7 @@ unittest: clean
 	py.test -v tests
 
 ci:
-	pipenv run py.test -sv tests --cov=infrabin
+	py.test -sv tests --cov=infrabin
 
 run:
 	./run.sh prod
