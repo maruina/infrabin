@@ -6,8 +6,6 @@ services:
 - docker
 install: make
 script:
-- make init
-- make install-dev
 - make ci
 after_success:
 - coveralls
