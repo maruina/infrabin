@@ -5,11 +5,14 @@ clean:
 	./clean.sh
 
 install-dev:
-	pipenv install -e .
+	pipenv install --dev --skip-lock
+
+install:
+	pipenv install --skip-lock
 
 lint:
-	black src/ tests/ setup.py
-	flake8 src/ tests/ setup.py
+	black infrabin/ tests/
+	flake8 --max-line-length=88 infrabin/ tests/
 
 unittest: clean
 	pytest -v tests
@@ -17,4 +20,4 @@ unittest: clean
 test: lint unittest
 
 run:
-	python3 src/infrabin/app.py
+	python3 infrabin/app.py
