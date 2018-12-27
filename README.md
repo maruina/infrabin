@@ -112,6 +112,10 @@ To override the default settings:
     * `severity` (optional, default to `INFO`): a [valid Python logging level](https://docs.python.org/3/library/logging.html#logging-levels)
   * _returns_: `200` on success or `400` if the request is malformed.
 
+## Metrics
+
+`infrabin` exports Prometheus metrics at the `/metrics` endpoint.
+
 ## Examples
 
 * `POST /status`
@@ -181,12 +185,15 @@ curl localhost:8080/fibonacci/10
 
 ## Development and Testing on OSX
 
+### With pipenv
+
 Clone the repository and create a local Python 3 virtual environment
 
 ```bash
 brew install pipenv
 git clone git@github.com:maruina/infrabin.git
 cd infrabin
+pipenv --python 3.7
 make install-dev
 ```
 

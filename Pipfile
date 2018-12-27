@@ -1,19 +1,30 @@
 [[source]]
-
-url = "https://pypi.python.org/simple"
-verify_ssl = true
 name = "pypi"
-
-
-[packages]
-
-"e1839a8" = {path = ".", editable = true}
-
+url = "https://pypi.org/simple"
+verify_ssl = true
 
 [dev-packages]
+black = "==18.9b0"
+coverage = "*"
+coveralls = "*"
+flake8 = "*"
+pytest = "*"
+pytest-cov = "*"
+pytest-flask = "*"
+pytest-mock = "*"
+pytest-pep8 = "*"
 
-
+[packages]
+decorator = "*"
+dnspython = "*"
+eventlet = "*"
+Flask = "*"
+Flask-Caching = "*"
+netifaces = "*"
+prometheus-client = "*"
+requests = "*"
+six = "*"
+uwsgi = "*"
 
 [requires]
-
-python_version = "3.6"
+python_version = "3.7"

@@ -1,20 +1,26 @@
-export FLASK_APP=src/infrabin/app.py
+export FLASK_APP=infrabin/app.py
 export FLASK_DEBUG=1
 
 clean:
 	./clean.sh
 
+init:
+	pip install pipenv --upgrade
+
 install-dev:
-	pipenv install -e .
+	pipenv install --dev --skip-lock
+
+install:
+	pipenv install --skip-lock
 
 lint:
-	black src/ tests/ setup.py
-	flake8 src/ tests/ setup.py
+	black infrabin/ tests/
+	flake8 --max-line-length=88 infrabin/ tests/
 
 unittest: clean
-	pytest -v tests
+	pytest -sv tests --cov=infrabin
 
 test: lint unittest
 
-run:
-	python3 src/infrabin/app.py
+run-dev:
+	./run-dev.sh

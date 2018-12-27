@@ -1,17 +1,18 @@
-FROM python:3-alpine
-ENV PORT 8080
-ENV THREADS 4
+FROM python:3.7-alpine
+ENV PORT=8080
+ENV THREADS=8
 
-RUN apk add --no-cache gcc musl-dev linux-headers curl bind-tools && \
-    rm -rf /var/cache/apk/*
+RUN addgroup infrabin && \
+    adduser -S -G infrabin infrabin
+
+RUN apk add --no-cache gcc musl-dev linux-headers curl bind-tools dumb-init
 
 ADD . /infrabin
-RUN pip install infrabin/
+WORKDIR /infrabin
+RUN pip install pip pipenv -U && \
+    pipenv install --deploy --system --skip-lock
 
-EXPOSE 8080
+EXPOSE ${PORT}
 
-WORKDIR /infrabin/src/infrabin
-CMD exec gunicorn -w "${THREADS}" \
-    -b "0.0.0.0:${PORT}" \
-    -k eventlet \
-    app:app
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+ENTRYPOINT ["docker-entrypoint.sh"]
