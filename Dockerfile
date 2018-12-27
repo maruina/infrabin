@@ -1,17 +1,21 @@
-FROM python:3-alpine
+FROM python:3.7-alpine
 ENV PORT 8080
-ENV THREADS 4
+ENV THREADS 8
 
-RUN apk add --no-cache gcc musl-dev linux-headers curl bind-tools && \
-    rm -rf /var/cache/apk/*
+RUN addgroup infrabin && \
+    adduser -S -G infrabin infrabin
+
+RUN apk add --no-cache gcc musl-dev linux-headers curl bind-tools
 
 ADD . /infrabin
-RUN pip install infrabin/
+WORKDIR /infrabin
+RUN pip install pip && \
+    pip install pipenv --upgrade && \
+    pipenv install --deploy --system --skip-lock
 
-EXPOSE 8080
-
-WORKDIR /infrabin/src/infrabin
-CMD exec gunicorn -w "${THREADS}" \
-    -b "0.0.0.0:${PORT}" \
-    -k eventlet \
-    app:app
+EXPOSE ${PORT}
+CMD exec uwsgi --http "0.0.0.0:${PORT}" \
+    --wsgi-file infrabin/app.py \
+    --callable app_dispatch \
+    --processes 1 \
+    --threads "${THREADS}"

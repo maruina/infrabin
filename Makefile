@@ -22,5 +22,5 @@ unittest: clean
 
 test: lint unittest
 
-run:
-	PYTHONPATH="." python3 infrabin/app.py
+run-dev:
+	./run-dev.sh

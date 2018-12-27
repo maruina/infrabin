@@ -1,25 +1,26 @@
+from __future__ import print_function
+
 import os
 import requests
 import netifaces
 import dns.resolver
 import time
 import socket
-import logging
 from random import randint
 from flask import Flask, jsonify, request, make_response
 from flask_caching import Cache
 from infrabin.helpers import status_code, gzipped, fib
+from werkzeug.wsgi import DispatcherMiddleware
+from prometheus_client import Counter, make_wsgi_app
 
 
 app = Flask(__name__)
 cache = Cache(app, config={"CACHE_TYPE": "simple"})
-
-
-# Logging configuration in Gunicorn
-if __name__ != "__main__":
-    gunicorn_logger = logging.getLogger("gunicorn.error")
-    app.logger.handlers = gunicorn_logger.handlers
-    app.logger.setLevel(gunicorn_logger.level)
+# Add prometheus wsgi middleware to route /metrics requests
+app_dispatch = DispatcherMiddleware(app, {"/metrics": make_wsgi_app()})
+c = Counter(
+    "http_requests_total", "http_requests_total", ["method", "endpoint", "code"]
+)
 
 
 AWS_METADATA_ENDPOINT = "http://169.254.169.254/latest/meta-data/"
@@ -48,6 +49,7 @@ def main():
     data = dict()
     data["hostname"] = socket.gethostname()
     data["message"] = "infrabin is running"
+    c.labels(request.method, request.path, 200).inc()
     return jsonify(data)
 
 
@@ -57,6 +59,7 @@ def headers():
     data["method"] = request.method
     data["headers"] = dict(request.headers)
     data["origin"] = request.remote_addr
+    c.labels(request.method, request.path, 200).inc()
     return jsonify(data)
 
 
@@ -68,19 +71,20 @@ def network(interface=None):
             netifaces.ifaddresses(interface)
             interfaces = [interface]
         except ValueError:
+            c.labels(request.method, request.path, 404).inc()
             return (
                 jsonify({"message": "interface {} not available".format(interface)}),
                 404,
             )
     else:
         interfaces = netifaces.interfaces()
-
     data = dict()
     for i in interfaces:
         try:
             data[i] = netifaces.ifaddresses(i)[2]
         except KeyError:
             data[i] = {"message": "AF_INET data missing"}
+    c.labels(request.method, request.path, 200).inc()
     return jsonify(data)
 
 
@@ -88,8 +92,10 @@ def network(interface=None):
 def healthcheck_liveness():
     global liveness_healthy
     if liveness_healthy:
+        c.labels(request.method, request.path, 200).inc()
         return jsonify({"message": "liveness probe healthy"})
     else:
+        c.labels(request.method, request.path, 503).inc()
         return status_code(503)
 
 
@@ -97,6 +103,7 @@ def healthcheck_liveness():
 def healthcheck_liveness_pass():
     global liveness_healthy
     liveness_healthy = True
+    c.labels(request.method, request.path, 204).inc()
     return status_code(204)
 
 
@@ -104,6 +111,7 @@ def healthcheck_liveness_pass():
 def healthcheck_liveness_fail():
     global liveness_healthy
     liveness_healthy = False
+    c.labels(request.method, request.path, 204).inc()
     return status_code(204)
 
 
@@ -111,8 +119,10 @@ def healthcheck_liveness_fail():
 def healthcheck_readiness():
     global readiness_healthy
     if readiness_healthy:
+        c.labels(request.method, request.path, 200).inc()
         return jsonify({"message": "readiness probe healthy"})
     else:
+        c.labels(request.method, request.path, 503).inc()
         return status_code(503)
 
 
@@ -120,6 +130,7 @@ def healthcheck_readiness():
 def healthcheck_readiness_pass():
     global readiness_healthy
     readiness_healthy = True
+    c.labels(request.method, request.path, 204).inc()
     return status_code(204)
 
 
@@ -127,6 +138,7 @@ def healthcheck_readiness_pass():
 def healthcheck_readiness_fail():
     global readiness_healthy
     readiness_healthy = False
+    c.labels(request.method, request.path, 204).inc()
     return status_code(204)
 
 
@@ -134,8 +146,10 @@ def healthcheck_readiness_fail():
 def env(env_var):
     value = os.getenv(env_var)
     if value is None:
+        c.labels(request.method, request.path, 404).inc()
         return status_code(404)
     else:
+        c.labels(request.method, request.path, 200).inc()
         return jsonify({env_var: value})
 
 
@@ -145,6 +159,7 @@ def aws(metadata_category):
     try:
         r = requests.get(AWS_METADATA_ENDPOINT + metadata_category, timeout=3)
     except requests.exceptions.RequestException as e:
+        c.labels(request.method, request.path, 502).inc()
         return (
             jsonify(
                 {
@@ -155,7 +170,9 @@ def aws(metadata_category):
             502,
         )
     if r.status_code == 404:
+        c.labels(request.method, request.path, 404).inc()
         return status_code(404)
+    c.labels(request.method, request.path, 202).inc()
     return jsonify({metadata_category: r.text})
 
 
@@ -166,6 +183,7 @@ def connectivity():
     # Test DNS
     nameservers = data.get("nameservers", ["8.8.8.8", "8.8.4.4"])
     if not isinstance(nameservers, list):
+        c.labels(request.method, request.path, 404).inc()
         return status_code(400)
     query = data.get("query", "google.com")
     resolver = dns.resolver.Resolver()
@@ -182,6 +200,7 @@ def connectivity():
         response["egress"] = {"status": "ok"}
     except requests.exceptions.RequestException as e:
         response["egress"] = {"status": "error", "reason": e.__class__.__name__}
+    c.labels(request.method, request.path, 200).inc()
     return jsonify(response)
 
 
@@ -189,6 +208,7 @@ def connectivity():
 @gzipped
 def gzip():
     response = {"message": "this is gzip compressed"}
+    c.labels(request.method, request.path, 200).inc()
     return jsonify(response)
 
 
@@ -196,6 +216,7 @@ def gzip():
 def proxy():
     data = request.get_json()
     if not data or not isinstance(data, list):
+        c.labels(request.method, request.path, 400).inc()
         return status_code(400)
 
     http_proxy = os.getenv("http_proxy", None)
@@ -225,8 +246,7 @@ def proxy():
                     "status": "ok",
                     "status_code": r.status_code,
                     # r.headers is of type requests.structures.CaseInsensitiveDict
-                    # We want to convert it to a dictionary
-                    # to return it into the response
+                    # We want to convert it to a dictionary to return it into the response
                     "headers": dict(**r.headers),
                 }
             except requests.exceptions.RequestException as e:
@@ -236,7 +256,9 @@ def proxy():
                     "reason": e.__class__.__name__,
                 }
         else:
+            c.labels(request.method, request.path, 400).inc()
             return jsonify({"message": "url missing"}), 400
+    c.labels(request.method, request.path, 200).inc()
     return jsonify(response)
 
 
@@ -244,11 +266,13 @@ def proxy():
 def delay(sec):
     global max_delay
     time.sleep(min(sec, max_delay))
+    c.labels(request.method, request.path, 200).inc()
     return status_code(200)
 
 
 @app.route("/status/<int:code>")
 def status(code):
+    c.labels(request.method, request.path, code).inc()
     return status_code(code)
 
 
@@ -259,27 +283,30 @@ def retry():
 
     if retries < max_retries:
         retries += 1
+        c.labels(request.method, request.path, 503).inc()
         return status_code(503)
     else:
         retries = 0
+        c.labels(request.method, request.path, 200).inc()
         return status_code(200)
 
 
 @app.route("/retry/max_retries")
 def max_retries_status():
     global max_retries
+    c.labels(request.method, request.path, 200).inc()
     return jsonify({"max_retries": max_retries}), 200
 
 
 @app.route("/bytes/<int:n>", methods=["GET", "POST"])
 def bytes(n):
     global max_size
-
     n = min(n, max_size)
     response = make_response()
     response.data = bytearray(randint(0, 255) for i in range(n))
     response.content_type = "application/octet-stream"
     response.status_code = 200
+    c.labels(request.method, request.path, 200).inc()
     return response
 
 
@@ -288,6 +315,7 @@ def mirror():
     response = make_response()
     response.data = request.get_data()
     response.headers = request.headers
+    c.labels(request.method, request.path, 200).inc()
     return response
 
 
@@ -295,6 +323,7 @@ def mirror():
 def fibonacci(n):
     result = fib(n)
     response = {"response": result}
+    c.labels(request.method, request.path, 200).inc()
     return jsonify(response)
 
 
@@ -305,8 +334,10 @@ def record_log():
     message = data.get("message", "")
     if all([data, severity, message]) and severity in LOG_LEVELS:
         app.logger.log(LOG_LEVELS[severity], message)
+        c.labels(request.method, request.path, 200).inc()
         return status_code(200)
     else:
+        c.labels(request.method, request.path, 400).inc()
         return status_code(400)
 
 
