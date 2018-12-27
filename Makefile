@@ -4,6 +4,9 @@ export FLASK_DEBUG=1
 clean:
 	./clean.sh
 
+init:
+	pip install pipenv --upgrade
+
 install-dev:
 	pipenv install --dev --skip-lock
 
@@ -15,7 +18,7 @@ lint:
 	flake8 --max-line-length=88 infrabin/ tests/
 
 unittest: clean
-	pytest -v tests
+	pytest -sv tests --cov=infrabin
 
 test: lint unittest
 

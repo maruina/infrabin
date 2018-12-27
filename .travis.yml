@@ -3,14 +3,15 @@ services:
 - docker
 language: python
 python:
-- '2.7'
-- '3.6'
-install: pip install tox-travis coveralls
+- '3.7'
+install: make
 script:
-- tox
+- make init
+- make install-dev
+- make test
 after_success:
 - coveralls
-- VERSION=$(cat version.txt)
+- VERSION=$(cat VERSION)
 - echo "Building $TRAVIS_BRANCH image from commit $COMMIT"
 - TAG=$(if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi)
 - docker build -f Dockerfile -t $TRAVIS_REPO_SLUG:$TAG .
