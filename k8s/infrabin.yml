@@ -18,12 +18,16 @@ spec:
       run: infrabin
   template:
     metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "8080"
       labels:
         run: infrabin
     spec:
       containers:
         - name: infrabin
-          image: maruina/infrabin:0.8.0
+          image: maruina/infrabin:0.9.1
           ports:
             - containerPort: 8080
           lifecycle:
