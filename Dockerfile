@@ -9,8 +9,7 @@ RUN apk add --no-cache gcc musl-dev linux-headers curl bind-tools
 
 ADD . /infrabin
 WORKDIR /infrabin
-RUN pip install pip && \
-    pip install pipenv --upgrade && \
+RUN pip install pip pipenv -U && \
     pipenv install --deploy --system --skip-lock
 
 EXPOSE ${PORT}
