@@ -246,7 +246,8 @@ def proxy():
                     "status": "ok",
                     "status_code": r.status_code,
                     # r.headers is of type requests.structures.CaseInsensitiveDict
-                    # We want to convert it to a dictionary to return it into the response
+                    # We want to convert it to a dictionary
+                    # to return it into the response
                     "headers": dict(**r.headers),
                 }
             except requests.exceptions.RequestException as e:
