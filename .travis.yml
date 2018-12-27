@@ -9,9 +9,10 @@ script:
 - make test
 after_success:
 - coveralls
-- VERSION=$(cat VERSION)
+- VERSION=$(cat version.txt)
+- echo "Infrabin version $VERSION"
 - echo "Building $TRAVIS_BRANCH image from commit $COMMIT"
-- TAG=$(if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi)
+- TAG=$(if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH; fi)
 - docker build -f Dockerfile -t $TRAVIS_REPO_SLUG:$TAG .
 - if [ "$TAG" == "latest" ]; then docker tag $TRAVIS_REPO_SLUG:$TAG $TRAVIS_REPO_SLUG:$VERSION; fi
 - docker login -u $DOCKER_USER -p $DOCKER_PASS
