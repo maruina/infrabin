@@ -1,4 +1,4 @@
-export FLASK_APP=src/infrabin/app.py
+export FLASK_APP=infrabin/app.py
 export FLASK_DEBUG=1
 
 clean:
@@ -20,4 +20,4 @@ unittest: clean
 test: lint unittest
 
 run:
-	python3 infrabin/app.py
+	PYTHONPATH="." python3 infrabin/app.py
