@@ -2,7 +2,9 @@
 
 set -eu
 
-export prometheus_multiproc_dir="$(mktemp -d)"
+prometheus_multiproc_dir="$(mktemp -d)"
+export prometheus_multiproc_dir
+
 exec uwsgi --http "0.0.0.0:${PORT}" \
     --wsgi-file infrabin/app.py \
     --callable app_dispatch \
