@@ -19,7 +19,9 @@ cache = Cache(app, config={"CACHE_TYPE": "simple"})
 # Add prometheus wsgi middleware to route /metrics requests
 app_dispatch = DispatcherMiddleware(app, {"/metrics": make_wsgi_app()})
 c = Counter(
-    "http_requests_total", "http_requests_total", ["method", "endpoint", "code"]
+    "infrabin_http_requests_total",
+    "total number of requests",
+    ["method", "endpoint", "code"],
 )
 
 
