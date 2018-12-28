@@ -83,7 +83,7 @@ To override the default settings:
     * `nameservers` (optional): a list of DNS nameserver
     * `query` (optional): the DNS domain to resolve
     * `egress_url` (optional): the remote url to open
-  * _returns_: same as `GET /status` or `400` if the request is malformed.
+  * _returns_: same as `GET /connectivity` or `400` if the request is malformed.
 * `GET /gzip`
   * _returns_: the JSON `{"message": "this is gzip compressed"}` gzip compressed.
 * `POST /proxy`
@@ -194,6 +194,7 @@ brew install pipenv
 git clone git@github.com:maruina/infrabin.git
 cd infrabin
 pipenv --python 3.7
+pipenv shell
 make install-dev
 ```
 
@@ -201,7 +202,7 @@ Run `infrabin` locally
 
 ```bash
 pipenv shell
-make run
+make run-dev
 ```
 
 Run the tests
