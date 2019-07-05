@@ -22,6 +22,7 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/path: "/metrics"
         prometheus.io/port: "8080"
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"
       labels:
         run: infrabin
     spec:
@@ -29,7 +30,8 @@ spec:
         - name: infrabin
           image: maruina/infrabin:0.9.1
           ports:
-            - containerPort: 8080
+            - name: http 
+              containerPort: 8080
           lifecycle:
             preStop:
               exec:
