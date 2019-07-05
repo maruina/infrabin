@@ -321,7 +321,7 @@ def test_mirror_json(client, method):
     )
     assert response.status_code == 200
     assert response.headers["Content-Type"] == "application/json"
-    if method is not "HEAD":
+    if method != "HEAD":
         data = json.loads(response.data.decode("utf-8"))
         assert data == payload
 
