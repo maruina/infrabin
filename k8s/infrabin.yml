@@ -9,13 +9,14 @@ kind: Deployment
 metadata:
   namespace: infrabin
   labels:
-    run: infrabin
+    app: infrabin
+    version: 0.9.1
   name: infrabin
 spec:
   replicas: 3
   selector:
     matchLabels:
-      run: infrabin
+      app: infrabin
   template:
     metadata:
       annotations:
@@ -24,7 +25,7 @@ spec:
         prometheus.io/port: "8080"
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
       labels:
-        run: infrabin
+        app: infrabin
     spec:
       containers:
         - name: infrabin
@@ -50,9 +51,6 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 1
           resources:
-            limits:
-              cpu: 500m
-              memory: 512Mi
             requests:
               cpu: 250m
               memory: 256Mi
@@ -66,7 +64,7 @@ metadata:
   name: infrabin
 spec:
   ports:
-    - name: port
+    - name: http
       port: 8080
       protocol: TCP
       targetPort: 8080
