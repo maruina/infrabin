@@ -4,7 +4,7 @@ metadata:
   namespace: infrabin
   labels:
     app: infrabin
-    version: 0.9.1
+    version: 0.9.2
   name: infrabin
 spec:
   replicas: 3
@@ -24,8 +24,11 @@ spec:
       containers:
         - name: infrabin
           image: maruina/infrabin:0.9.2
+          env:
+          - name: USE_ENVOY_PREFLIGHT
+            value: "true"
           ports:
-            - name: http 
+            - name: http-service
               containerPort: 8080
           lifecycle:
             preStop:
@@ -51,6 +54,3 @@ spec:
             limits:
               cpu: 1000m
               memory: 1024Mi
-          env:
-          - name: USE_ENVOY_PREFLIGHT
-            value: "false"
