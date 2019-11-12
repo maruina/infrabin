@@ -19,7 +19,10 @@ docker run -d -p 8080:8080 maruina/infrabin
 ### Kubernetes
 
 ```bash
-kubectl apply -f k8s/infrabin.yml
+# Apply only what you need
+kubectl apply -f k8s/namespace.yml
+kubectl apply -f k8s/deployment.yml
+kubectl apply -f k8s/service.yml
 
 # Example ingress rule to be changed according the k8s configuration
 cat <<EOF | kubectl create -f -
@@ -49,6 +52,7 @@ To override the default settings:
 * `-e MAX_DELAY=<MAX_DELAY>` to change the maximum value for the `/delay` endpoint. Default to 120.
 * `-e MAX_RETRIES=<MAX_RETRIES>` to change the maximum value for the `/retry` endpoint. Default to 3.
 * `-e MAX_SIZE=<MAX_SIZE>` to change the maximum value for the `/bytes` endpoint. Default to 1024 * 1024 Kb (1 Mb).
+* `-e USE_ENVOY_PREFLIGHT=true` wrap the `uwsgi` process around [https://github.com/monzo/envoy-preflight](https://github.com/monzo/envoy-preflight) to work with envoy and any other service mesh envoy-based. Default to `false`.
 
 ## Endpoints
 
