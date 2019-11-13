@@ -4,13 +4,13 @@ kind: Service
 metadata:
   namespace: infrabin
   labels:
-    run: infrabin
+    app: infrabin
   name: infrabin
 spec:
   ports:
-    - name: http
+    - name: http-service
       port: 8080
       protocol: TCP
       targetPort: 8080
   selector:
-    run: infrabin
+    app: infrabin
