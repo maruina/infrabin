@@ -1,13 +1,19 @@
-- repo: git://github.com/pre-commit/pre-commit-hooks
-  sha: v1.3.0
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v2.5.0
   hooks:
     - id: trailing-whitespace
     - id: check-docstring-first
     - id: check-yaml
       args: ['--allow-multiple-documents']
+      exclude: chart/infrabin/templates/
     - id: check-merge-conflict
     - id: detect-aws-credentials
     - id: detect-private-key
     - id: end-of-file-fixer
     - id: no-commit-to-branch
     - id: sort-simple-yaml
+-   repo: https://github.com/ambv/black
+    rev: stable
+    hooks:
+    - id: black
+      language_version: python3.7
