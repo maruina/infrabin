@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "infrabin.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "infrabin.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http-service
+      protocol: TCP
+      name: http-service
+  selector:
+    {{- include "infrabin.selectorLabels" . | nindent 4 }}
