@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "infrabin.fullname" . }}
+  labels:
+{{ include "infrabin.labels" . | indent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http-service
+      protocol: TCP
+      name: http-service
+  selector:
+    app.kubernetes.io/name: {{ include "infrabin.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
