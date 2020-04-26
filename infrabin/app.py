@@ -10,7 +10,7 @@ from random import randint
 from flask import Flask, jsonify, request, make_response
 from flask_caching import Cache
 from infrabin.helpers import status_code, gzipped, fib
-from werkzeug.wsgi import DispatcherMiddleware
+from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from prometheus_client import Counter, make_wsgi_app
 
 
