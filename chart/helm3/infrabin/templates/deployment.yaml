@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "infrabin.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "infrabin.labels" . | nindent 4 }}
 spec:
@@ -34,19 +35,25 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
-              containerPort: 80
+            - name: http-service
+              containerPort: 8080
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
-              port: http
+              path: /healthcheck/liveness
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 3
           readinessProbe:
             httpGet:
-              path: /
-              port: http
+              path: /healthcheck/readiness
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 1
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            {{- toYaml .Values.extraEnv | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
